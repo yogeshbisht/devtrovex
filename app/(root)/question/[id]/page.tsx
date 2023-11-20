@@ -1,4 +1,5 @@
 import Answer from "@/components/forms/Answer";
+import AllAnswers from "@/components/shared/AllAnswers";
 import Metric from "@/components/shared/Metric";
 import ParseHTML from "@/components/shared/ParseHTML";
 import RenderTag from "@/components/shared/RenderTag";
@@ -10,7 +11,12 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const QuestionPage = async ({ params, searchParams }) => {
+type QuestionPageProps = {
+  params: { id: string };
+  searchParams: string;
+};
+
+const QuestionPage = async ({ params, searchParams }: QuestionPageProps) => {
   const result = await getQuestionById({ questionId: params.id });
   const { userId: clerkId } = auth();
 
@@ -82,6 +88,12 @@ const QuestionPage = async ({ params, searchParams }) => {
           />
         ))}
       </div>
+
+      <AllAnswers
+        questionId={result._id}
+        userId={JSON.stringify(mongoUser._id)}
+        totalAnswers={result.answers.length}
+      />
 
       <Answer
         question={result.content}
