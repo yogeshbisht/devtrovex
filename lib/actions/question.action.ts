@@ -30,7 +30,6 @@ export async function getQuestions(params: GetQuestionsParams) {
 export async function createQuestion(params: CreateQuestionParams) {
   try {
     connectToDatabase();
-    console.log(params);
 
     const { title, content, tags, author, path } = params;
 
