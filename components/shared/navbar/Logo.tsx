@@ -10,13 +10,14 @@ const Logo: React.FC<LogoProps> = ({ isMobile = false }) => {
   return (
     <Link href="/" className="flex items-center gap-1">
       <Image
-        src="/assets/images/site-logo.svg"
-        width={23}
-        height={23}
+        src="/assets/images/devtrovex.svg"
+        width={40}
+        height={40}
         alt="DevTroveX"
+        className="mr-1"
       />
       <p
-        className={`h2-bold text-dark100_light900 font-spaceGrotesk ${
+        className={`h1-bold text-dark100_light900 font-spaceGrotesk ${
           !isMobile && "max-sm:hidden"
         }`}
       >

@@ -20,7 +20,7 @@ const Navbar = () => {
                 avatarBox: "h-10 w-10",
               },
               variables: {
-                colorPrimary: "#FF7000",
+                colorPrimary: "#008fff",
               },
             }}
           />

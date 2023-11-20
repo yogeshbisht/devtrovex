@@ -5,6 +5,7 @@ import React, { useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Editor } from "@tinymce/tinymce-react";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 
 import { QuestionsSchema } from "@/lib/validations";
@@ -21,7 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { createQuestion } from "@/lib/actions/question.action";
-import { usePathname, useRouter } from "next/navigation";
+import { useTheme } from "@/context/ThemeProvider";
 
 const type: any = "create";
 
@@ -30,6 +31,7 @@ type QuestionProps = {
 };
 
 const Question = ({ mongoUserId }: QuestionProps) => {
+  const { mode } = useTheme();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -177,6 +179,8 @@ const Question = ({ mongoUserId }: QuestionProps) => {
                       "alignright alignjustify | bullist numlist | " +
                       "removeformat | help",
                     content_style: "body { font-family:Inter; font-size:16px }",
+                    skin: mode === "dark" ? "oxide-dark" : "oxide",
+                    content_css: mode === "dark" ? "dark" : "light",
                   }}
                 />
               </FormControl>
