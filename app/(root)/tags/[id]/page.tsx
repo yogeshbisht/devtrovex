@@ -4,7 +4,6 @@ import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { IQuestion } from "@/database/question.model";
 import { getQuestionsByTagId } from "@/lib/actions/tag.actions";
 import { URLProps } from "@/types";
-import React from "react";
 
 const TagDetailsPage = async ({ params, searchParams }: URLProps) => {
   const result = await getQuestionsByTagId({
@@ -12,6 +11,8 @@ const TagDetailsPage = async ({ params, searchParams }: URLProps) => {
     page: 1,
     searchQuery: searchParams.q,
   });
+
+  console.log(result);
 
   return (
     <>
