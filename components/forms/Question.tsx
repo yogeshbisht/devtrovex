@@ -38,11 +38,8 @@ const Question = ({ type, mongoUserId, questionDetails }: QuestionProps) => {
   const editorRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  let parsedQuestionDetails: any;
-
-  if (questionDetails) {
-    parsedQuestionDetails = JSON.parse(questionDetails);
-  }
+  const parsedQuestionDetails =
+    questionDetails && JSON.parse(questionDetails || "");
 
   const groupedTags = parsedQuestionDetails?.tags.map((tag: any) => tag.name);
 
