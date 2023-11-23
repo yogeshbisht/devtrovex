@@ -1,3 +1,8 @@
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { auth } from "@clerk/nextjs";
+
 import Answer from "@/components/forms/Answer";
 import AllAnswers from "@/components/shared/AllAnswers";
 import Metric from "@/components/shared/Metric";
@@ -7,18 +12,8 @@ import Votes from "@/components/shared/Votes";
 import { getQuestionById } from "@/lib/actions/question.action";
 import { getUserById } from "@/lib/actions/user.action";
 import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
-import { auth } from "@clerk/nextjs";
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
 
-type QuestionPageProps = {
-  params: { id: string };
-  searchParams: string;
-};
-
-const QuestionPage = async ({ params, searchParams }: QuestionPageProps) => {
-  const result = await getQuestionById({ questionId: params.id });
+const QuestionPage = async ({ params, searchParams }) => {
   const { userId: clerkId } = auth();
 
   let mongoUser;
@@ -26,6 +21,8 @@ const QuestionPage = async ({ params, searchParams }: QuestionPageProps) => {
   if (clerkId) {
     mongoUser = await getUserById({ userId: clerkId });
   }
+
+  const result = await getQuestionById({ questionId: params.id });
 
   return (
     <>
@@ -105,6 +102,8 @@ const QuestionPage = async ({ params, searchParams }: QuestionPageProps) => {
         questionId={result._id}
         userId={mongoUser._id}
         totalAnswers={result.answers.length}
+        page={searchParams?.page}
+        filter={searchParams?.filter}
       />
 
       <Answer
