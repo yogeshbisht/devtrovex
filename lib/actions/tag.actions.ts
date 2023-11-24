@@ -8,8 +8,9 @@ import {
   GetTopInteractedTagsParams,
 } from "./shared.types";
 import { connectToDatabase } from "../mongoose";
-import Tag, { ITag } from "@/database/tag.model";
-import Question from "@/database/question.model";
+import Tag, { TTagDoc } from "@/database/tag.model";
+import Question, { TQuestionDoc } from "@/database/question.model";
+import { Populated } from "@/database/shared.types";
 
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   try {
@@ -20,9 +21,6 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
     if (!user) {
       throw new Error("User not found");
     }
-
-    // Find interactions for the user and group by tags
-    // TODO Interactions model
 
     return [
       { _id: "1", name: "tag 1" },
@@ -84,6 +82,10 @@ export async function getAllTags(params: GetAllTagsParams) {
   }
 }
 
+type TPopulatedQuestionsTagById = Omit<TTagDoc, "questions"> & {
+  questions: Populated<TQuestionDoc, "author" | "tags">[];
+};
+
 export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
   try {
     connectToDatabase();
@@ -91,18 +93,21 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
     const { tagId, page = 1, pageSize = 10, searchQuery } = params;
     const skipAmount = (page - 1) * pageSize;
 
-    const tagFilter: FilterQuery<ITag> = searchQuery
-      ? { title: { $regex: new RegExp(searchQuery, "i") } }
-      : {};
+    const tagFilter: FilterQuery<TTagDoc> = { _id: tagId };
+    const fullDocs = await Tag.countDocuments();
 
-    const tag = await Tag.findOne({ _id: tagId }).populate({
+    const tag = await Tag.findOne(
+      tagFilter
+    ).populate<TPopulatedQuestionsTagById>({
       path: "questions",
+      match: searchQuery
+        ? { title: { $regex: searchQuery, $options: "i" } }
+        : {},
       model: Question,
-      match: tagFilter,
       options: { sort: { createdAt: -1 }, skip: skipAmount, limit: pageSize },
       populate: [
-        { path: "tags", model: Tag, select: "_id name" },
         { path: "author", model: User, select: "_id clerkId name picture" },
+        { path: "tags", model: Tag, select: "_id name" },
       ],
     });
 
@@ -110,7 +115,7 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
       throw new Error("Tag not found");
     }
 
-    const isNext = tag.questions.length > pageSize;
+    const isNext = tag.questions.length + skipAmount < fullDocs;
 
     return { tagTitle: tag.name, questions: tag.questions, isNext };
   } catch (error) {

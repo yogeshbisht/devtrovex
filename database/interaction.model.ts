@@ -1,15 +1,23 @@
-import { Schema, models, model, Document } from "mongoose";
+import { Schema, models, model, Document, Types, Model } from "mongoose";
+import { TUserDoc } from "./user.model";
+import { TQuestionDoc } from "./question.model";
+import { TAnswerDoc } from "./answer.model";
+import { TTagDoc } from "./tag.model";
 
-export interface IInteraction extends Document {
-  user: Schema.Types.ObjectId;
+export type TInteraction = {
+  user: Types.ObjectId | TUserDoc;
   action: string;
-  question: Schema.Types.ObjectId;
-  answer: Schema.Types.ObjectId;
-  tags: Schema.Types.ObjectId[];
-  createdAt: Date;
-}
+  question: Types.ObjectId | TQuestionDoc;
+  answer: Types.ObjectId | TAnswerDoc;
+  tags: Types.ObjectId[] | TTagDoc[];
+};
 
-const InteractionSchema = new Schema({
+export type TInteractionDoc = TInteraction &
+  Document & {
+    createdAt: Date;
+  };
+
+const interactionSchema = new Schema<TInteractionDoc>({
   user: { type: Schema.Types.ObjectId, ref: "User", required: true },
   action: { type: String, required: true },
   question: { type: Schema.Types.ObjectId, ref: "Question" },
@@ -18,7 +26,7 @@ const InteractionSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-const Interaction =
-  models.Interaction || model<IInteraction>("Interaction", InteractionSchema);
+const Interaction: Model<TInteractionDoc> =
+  models.Interaction || model("Interaction", interactionSchema);
 
 export default Interaction;

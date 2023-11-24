@@ -1,15 +1,21 @@
-import { Schema, models, model, Document } from "mongoose";
+import { Schema, models, model, Document, Types, Model } from "mongoose";
+import { TUserDoc } from "./user.model";
+import { TQuestionDoc } from "./question.model";
 
-export interface IAnswer extends Document {
-  author: Schema.Types.ObjectId;
-  question: Schema.Types.ObjectId;
+export type TAnswer = {
+  author: Types.ObjectId | TUserDoc;
+  question: Types.ObjectId | TQuestionDoc;
   content: string;
-  upvotes: Schema.Types.ObjectId[];
-  downvotes: Schema.Types.ObjectId[];
-  createdAt: Date;
-}
+  upvotes: Types.ObjectId[] | TUserDoc[];
+  downvotes: Types.ObjectId[] | TUserDoc[];
+};
 
-const AnswersSchema = new Schema({
+export type TAnswerDoc = TAnswer &
+  Document & {
+    createdAt: Date;
+  };
+
+const answerSchema = new Schema<TAnswerDoc>({
   author: { type: Schema.Types.ObjectId, ref: "User", required: true },
   question: { type: Schema.Types.ObjectId, ref: "Question", required: true },
   content: { type: String, required: true },
@@ -18,6 +24,7 @@ const AnswersSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-const Answer = models.Answer || model<IAnswer>("Answer", AnswersSchema);
+const Answer: Model<TAnswerDoc> =
+  models.Answer || model("Answer", answerSchema);
 
 export default Answer;

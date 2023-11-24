@@ -1,30 +1,45 @@
-import { Schema, models, model, Document } from "mongoose";
+import { Schema, models, model, Types, Model, Document } from "mongoose";
+import { TTagDoc } from "./tag.model";
+import { TUserDoc } from "./user.model";
 
-export interface IQuestion extends Document {
+export type TQuestion = {
   title: string;
   content: string;
-  tags: Schema.Types.ObjectId[];
+  tags: Types.ObjectId[] | TTagDoc[];
   views: number;
-  upvotes: Schema.Types.ObjectId[];
-  downvotes: Schema.Types.ObjectId[];
-  author: Schema.Types.ObjectId;
-  answers: Schema.Types.ObjectId[];
-  createdAt: Date;
-}
+  upvotes: Types.ObjectId[] | TUserDoc[];
+  downvotes: Types.ObjectId[] | TUserDoc[];
+  author: Types.ObjectId | TUserDoc;
+  answers: Types.ObjectId[];
+};
 
-const QuestionSchema = new Schema({
-  title: { type: String, required: true },
-  content: { type: String, required: true },
-  tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
-  views: { type: Number, default: 0 },
-  upvotes: [{ type: Schema.Types.ObjectId, ref: "User" }],
-  downvotes: [{ type: Schema.Types.ObjectId, ref: "User" }],
-  author: { type: Schema.Types.ObjectId, ref: "User" },
-  answers: [{ type: Schema.Types.ObjectId, ref: "Answer" }],
-  createdAt: { type: Date, default: Date.now },
-});
+export type TQuestionDoc = TQuestion &
+  Document & {
+    createdAt: Date;
+  };
 
-const Question =
-  models.Question || model<IQuestion>("Question", QuestionSchema);
+const questionSchema = new Schema<TQuestionDoc>(
+  {
+    title: { required: true, type: String },
+    content: { required: true, type: String },
+    tags: [{ required: true, type: Schema.Types.ObjectId, ref: "Tag" }],
+    views: { type: Number, default: 0 },
+    upvotes: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    downvotes: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    answers: [{ type: Schema.Types.ObjectId, ref: "Answer" }],
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+    versionKey: false,
+  }
+);
+
+const Question: Model<TQuestionDoc> =
+  models.Question || model("Question", questionSchema);
 
 export default Question;

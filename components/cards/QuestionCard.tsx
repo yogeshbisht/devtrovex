@@ -5,39 +5,18 @@ import Metric from "../shared/Metric";
 import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
 import { SignedIn } from "@clerk/nextjs";
 import EditDeleteAction from "../shared/EditDeleteAction";
+import { Populated } from "@/database/shared.types";
+import { TQuestionDoc } from "@/database/question.model";
 
-interface QuestionProps {
-  _id: string;
-  title: string;
-  tags: {
-    _id: string;
-    name: string;
-  }[];
-  author: {
-    _id: string;
-    name: string;
-    picture: string;
-    clerkId?: string;
-  };
-  upvotes: string[];
-  views: number;
-  answers: Array<object>;
-  createdAt: Date;
-  clerkId?: string;
-}
+type QuestionCardProps = {
+  question: Populated<TQuestionDoc, "author" | "tags">;
+  clerkId: string | null;
+};
 
-const QuestionCard = ({
-  clerkId,
-  _id,
-  title,
-  tags,
-  author,
-  upvotes,
-  views,
-  answers,
-  createdAt,
-}: QuestionProps) => {
-  const showActionButtons = clerkId && clerkId === author.clerkId;
+const QuestionCard = ({ question, clerkId }: QuestionCardProps) => {
+  const { id, title, createdAt, tags, upvotes, answers, views, author } =
+    question;
+  const isAuthor = clerkId && clerkId === author.clerkId;
 
   return (
     <div className="card-wrapper rounded-[10px] p-9 sm:px-11">
@@ -46,7 +25,7 @@ const QuestionCard = ({
           <span className="subtle-regular text-dark400_light700 line-clamp-1 flex sm:hidden">
             {getTimestamp(createdAt)}
           </span>
-          <Link href={`/question/${_id}`}>
+          <Link href={`/question/${id}`}>
             <h3 className="sm:h3-semibold base-semibold text-dark200_light900 line-clamp-1 flex-1">
               {title}
             </h3>
@@ -54,15 +33,13 @@ const QuestionCard = ({
         </div>
 
         <SignedIn>
-          {showActionButtons && (
-            <EditDeleteAction type="Question" itemId={JSON.stringify(_id)} />
-          )}
+          {isAuthor && <EditDeleteAction type="Question" itemId={id} />}
         </SignedIn>
       </div>
 
       <div className="mt-3.5 flex flex-wrap gap-2">
-        {tags.map((tag) => (
-          <RenderTag key={tag._id} _id={tag._id} name={tag.name} />
+        {tags?.map((tag) => (
+          <RenderTag key={tag?._id} _id={tag._id} name={tag.name} />
         ))}
       </div>
 
@@ -72,7 +49,7 @@ const QuestionCard = ({
           alt="user"
           value={author.name}
           title={` - asked ${getTimestamp(createdAt)}`}
-          href={`/profile/${author._id}`}
+          href={`/profile/${author?.clerkId}`}
           isAuthor
           textStyles="body-medium text-dark400_light700"
         />

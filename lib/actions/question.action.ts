@@ -1,6 +1,6 @@
 "use server";
 
-import Question from "@/database/question.model";
+import Question, { TQuestionDoc } from "@/database/question.model";
 import { connectToDatabase } from "../mongoose";
 import Tag from "@/database/tag.model";
 import {
@@ -16,6 +16,7 @@ import { revalidatePath } from "next/cache";
 import Answer from "@/database/answer.model";
 import Interaction from "@/database/interaction.model";
 import { FilterQuery } from "mongoose";
+import { Populated } from "@/database/shared.types";
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
@@ -25,24 +26,8 @@ export async function getQuestions(params: GetQuestionsParams) {
 
     // Calculate the number of posts to skip based on the page number and page size
     const skipAmount = (page - 1) * pageSize;
-
-    const query: FilterQuery<typeof Question> = {};
-
-    let sortOptions = {};
-
-    switch (filter) {
-      case "newest":
-        sortOptions = { createdAt: -1 };
-        break;
-      case "frequent":
-        sortOptions = { views: -1 };
-        break;
-      case "unanswered":
-        query.answers = { $size: 0 };
-        break;
-      default:
-        break;
-    }
+    const query: FilterQuery<TQuestionDoc> = {};
+    const sortOptions: FilterQuery<TQuestionDoc> = {};
 
     if (searchQuery) {
       query.$or = [
@@ -51,16 +36,30 @@ export async function getQuestions(params: GetQuestionsParams) {
       ];
     }
 
-    const questions = await Question.find(query)
+    const totalQuestions = await Question.countDocuments(query);
+
+    switch (filter) {
+      case "newest":
+        sortOptions.createdAt = -1;
+        break;
+      case "frequent":
+        sortOptions.views = -1;
+        break;
+      case "unanswered":
+        query.answers = { $size: 0 };
+        break;
+      default:
+        break;
+    }
+
+    const questions = (await Question.find(query)
       .populate({ path: "tags", model: Tag })
       .populate({ path: "author", model: User })
       .skip(skipAmount)
       .limit(pageSize)
-      .sort(sortOptions);
+      .sort(sortOptions)) as Populated<TQuestionDoc, "author" | "tags">[];
 
-    const totalQuestions = await Question.countDocuments(query);
-
-    const isNext = totalQuestions > skipAmount + questions.length;
+    const isNext = skipAmount + questions.length < totalQuestions;
 
     return { questions, isNext };
   } catch (error) {

@@ -7,19 +7,21 @@ import { QuestionFilters } from "@/constants/filters";
 import { getSavedQuestions } from "@/lib/actions/user.action";
 import { SearchParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
 
 export default async function CollectionPage({
   searchParams,
 }: SearchParamsProps) {
-  const { userId } = auth();
+  const { userId: clerkId } = auth();
+  if (!clerkId) redirect("/");
 
-  if (!userId) return null;
+  const page = searchParams.page ? Number(searchParams.page) : 1;
 
   const result = await getSavedQuestions({
-    clerkId: userId,
+    clerkId,
     searchQuery: searchParams.q,
     filter: searchParams.filter,
-    page: searchParams.page ? +searchParams.page : 1,
+    page,
   });
 
   return (
@@ -44,14 +46,8 @@ export default async function CollectionPage({
           result.questions.map((question: any) => (
             <QuestionCard
               key={question._id}
-              _id={question._id}
-              title={question.title}
-              tags={question.tags}
-              author={question.author}
-              upvotes={question.upvotes}
-              views={question.views}
-              answers={question.answers}
-              createdAt={question.createdAt}
+              clerkId={clerkId}
+              question={question}
             />
           ))
         ) : (
@@ -64,10 +60,7 @@ export default async function CollectionPage({
         )}
       </div>
       <div className="mt-10">
-        <Pagination
-          pageNumber={searchParams?.page ? +searchParams.page : 1}
-          isNext={result.isNext}
-        />
+        <Pagination pageNumber={page} isNext={result.isNext} />
       </div>
     </>
   );

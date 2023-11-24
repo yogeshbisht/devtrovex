@@ -15,10 +15,11 @@ import {
   UpdateUserParams,
 } from "./shared.types";
 import { revalidatePath } from "next/cache";
-import Question from "@/database/question.model";
+import Question, { TQuestionDoc } from "@/database/question.model";
 import Answer from "@/database/answer.model";
 import { BadgeCriteriaType } from "@/types";
 import { assignBadges } from "../utils";
+import { Populated } from "@/database/shared.types";
 
 export async function getUserById(params: GetUserByIdParams) {
   try {
@@ -153,7 +154,7 @@ export async function toggleSaveQuestion(params: ToggleSaveQuestionParams) {
   try {
     connectToDatabase();
 
-    const { userId, questionId, path } = params;
+    const { userId, questionId, path, hasSaved } = params;
 
     const user = await User.findById(userId);
 
@@ -161,21 +162,18 @@ export async function toggleSaveQuestion(params: ToggleSaveQuestionParams) {
       throw new Error("User not found");
     }
 
-    const isQuestionSaved = user.saved.includes(questionId);
+    let updateQuery: Record<string, any> = {};
 
-    if (isQuestionSaved) {
-      await User.findByIdAndUpdate(
-        userId,
-        { $pull: { saved: questionId } },
-        { new: true }
-      );
+    if (hasSaved) {
+      updateQuery = { $pull: { saved: questionId } };
     } else {
-      await User.findByIdAndUpdate(
-        userId,
-        { $addToSet: { saved: questionId } },
-        { new: true }
-      );
+      updateQuery = { $addToSet: { saved: questionId } };
     }
+
+    const result = await User.findByIdAndUpdate(userId, updateQuery, {
+      new: true,
+    });
+    if (!result) throw new Error("user not found");
 
     revalidatePath(path);
   } catch (error) {
@@ -191,29 +189,27 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
     const { clerkId, searchQuery, filter, page = 1, pageSize = 20 } = params;
     const skipAmount = (page - 1) * pageSize;
 
-    const query: FilterQuery<typeof Question> = searchQuery
+    const query: FilterQuery<TQuestionDoc> = searchQuery
       ? { title: { $regex: new RegExp(searchQuery, "i") } }
       : {};
-
-    let sortOptions = {};
+    const sortOptions: FilterQuery<TQuestionDoc> = {};
 
     switch (filter) {
       case "most_recent":
-        sortOptions = { createdAt: -1 };
+        sortOptions.createdAt = -1;
         break;
       case "oldest":
-        sortOptions = { createdAt: 1 };
+        sortOptions.createdAt = 1;
         break;
       case "most_voted":
-        sortOptions = { upvotes: -1 };
+        sortOptions.upvotes = -1;
         break;
       case "most_viewed":
-        sortOptions = { views: -1 };
+        sortOptions.views = -1;
         break;
       case "most_answered":
-        sortOptions = { answers: -1 };
+        sortOptions.answers = -1;
         break;
-
       default:
         break;
     }
@@ -223,20 +219,19 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
       match: query,
       options: { sort: sortOptions, skip: skipAmount, limit: pageSize },
       populate: [
-        { path: "tags", model: Tag, select: "_id name" },
         { path: "author", model: User, select: "_id clerkId name picture" },
+        { path: "tags", model: Tag, select: "_id name" },
       ],
     });
-
-    const isNext = user.saved.length > pageSize;
 
     if (!user) {
       throw new Error("User not found");
     }
 
-    const savedQuestions = user.saved;
+    const totalUsers = await User.countDocuments(query);
+    const isNext = user.saved.length + skipAmount < totalUsers;
 
-    return { questions: savedQuestions, isNext };
+    return { questions: user.saved, isNext };
   } catch (error) {
     console.log(error);
     throw error;
@@ -316,16 +311,20 @@ export async function getUserQuestions(params: GetUserStatsParams) {
 
     const totalQuestions = await Question.countDocuments({ author: userId });
 
-    const userQuestions = await Question.find({ author: userId })
+    const userQuestions = (await Question.find({ author: userId })
+      .populate("author", "_id clerkId name picture")
+      .populate("tags", "_id name")
       .sort({ createdAt: -1, views: -1, upvotes: -1 })
       .skip(skipAmount)
-      .limit(pageSize)
-      .populate("tags", "_id name")
-      .populate("author", "_id clerkId name picture");
+      .limit(pageSize)) as Populated<TQuestionDoc, "author" | "tags">[];
 
-    const isNextQuestion = totalQuestions > skipAmount + userQuestions.length;
+    if (!userQuestions) {
+      throw new Error("Question not found");
+    }
 
-    return { questions: userQuestions, totalQuestions, isNextQuestion };
+    const isNext = skipAmount + userQuestions.length < totalQuestions;
+
+    return { questions: userQuestions, totalQuestions, isNext };
   } catch (error) {
     console.log(error);
     throw error;

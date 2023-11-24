@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { auth } from "@clerk/nextjs";
 
 import QuestionCard from "@/components/cards/QuestionCard";
 import HomeFilters from "@/components/home/HomeFilters";
@@ -12,10 +13,13 @@ import { SearchParamsProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
 
 export default async function HomePage({ searchParams }: SearchParamsProps) {
+  const { userId } = auth();
+  const page = searchParams.page ? Number(searchParams.page) : 1;
+
   const result = await getQuestions({
     searchQuery: searchParams.q,
     filter: searchParams.filter,
-    page: searchParams.page ? +searchParams.page : 1,
+    page,
   });
 
   return (
@@ -49,33 +53,23 @@ export default async function HomePage({ searchParams }: SearchParamsProps) {
           result.questions.map((question) => (
             <QuestionCard
               key={question._id}
-              _id={question._id}
-              title={question.title}
-              tags={question.tags}
-              author={question.author}
-              upvotes={question.upvotes}
-              views={question.views}
-              answers={question.answers}
-              createdAt={question.createdAt}
+              clerkId={userId}
+              question={question}
             />
           ))
         ) : (
           <NoResult
             title="There are no questions to show"
-            description=" Lorem ipsum dolor, sit amet consectetur adipisicing elit. Non explicabo
-          voluptatum quis earum molestias suscipit asperiores autem, perferendis,
-          fugit provident porro neque sapiente quasi consectetur quas molestiae
-          nisi mollitia soluta!"
+            description="Be the first to break the silence! 🚀 Ask a Question and kickstart the
+            discussion. our query could be the next big thing others learn from. Get
+            involved! 💡"
             link="/ask-question"
             linkTitle="Ask a Question"
           />
         )}
       </div>
       <div className="mt-10">
-        <Pagination
-          pageNumber={searchParams?.page ? +searchParams.page : 1}
-          isNext={result.isNext}
-        />
+        <Pagination pageNumber={page} isNext={result.isNext} />
       </div>
     </>
   );

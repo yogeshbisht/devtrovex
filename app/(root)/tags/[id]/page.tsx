@@ -1,23 +1,29 @@
+import React from "react";
+import { auth } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
+
 import QuestionCard from "@/components/cards/QuestionCard";
 import NoResult from "@/components/shared/NoResult";
 import Pagination from "@/components/shared/Pagination";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
-import { IQuestion } from "@/database/question.model";
 import { getQuestionsByTagId } from "@/lib/actions/tag.actions";
 import { URLProps } from "@/types";
 
 const TagDetailsPage = async ({ params, searchParams }: URLProps) => {
+  const { userId } = auth();
+  if (!userId) redirect("/");
+
+  const page = searchParams.page ? Number(searchParams.page) : 1;
+
   const result = await getQuestionsByTagId({
     tagId: params.id,
-    page: searchParams.page ? +searchParams.page : 1,
+    page,
     searchQuery: searchParams.q,
   });
 
-  console.log(result);
-
   return (
     <>
-      <h1 className="h1-bold text-dark100_light900">{result.tagTitle}</h1>
+      <h1 className="h1-bold text-dark100_light900">{result?.tagTitle}</h1>
       <div className="mt-11 flex justify-between gap-5 max-sm:flex-col sm:items-center">
         <LocalSearchBar
           route={`/tags/${params.id}`}
@@ -30,17 +36,11 @@ const TagDetailsPage = async ({ params, searchParams }: URLProps) => {
 
       <div className="mt-10 flex w-full flex-col gap-6">
         {result.questions.length > 0 ? (
-          result.questions.map((question: IQuestion) => (
+          result.questions.map((question) => (
             <QuestionCard
               key={question._id}
-              _id={question._id}
-              title={question.title}
-              tags={question.tags}
-              author={question.author}
-              upvotes={question.upvotes}
-              views={question.views}
-              answers={question.answers}
-              createdAt={question.createdAt}
+              clerkId={userId}
+              question={question}
             />
           ))
         ) : (
@@ -53,10 +53,7 @@ const TagDetailsPage = async ({ params, searchParams }: URLProps) => {
         )}
       </div>
       <div className="mt-10">
-        <Pagination
-          pageNumber={searchParams?.page ? +searchParams.page : 1}
-          isNext={result.isNext}
-        />
+        <Pagination pageNumber={page} isNext={result.isNext} />
       </div>
     </>
   );

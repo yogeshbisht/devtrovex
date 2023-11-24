@@ -1,6 +1,7 @@
-import { Schema, models, model, Document } from "mongoose";
+import { Schema, models, model, Types, Model } from "mongoose";
+import { TQuestionDoc } from "./question.model";
 
-export interface IUser extends Document {
+export type TUser = {
   clerkId: string;
   name: string;
   username: string;
@@ -11,19 +12,19 @@ export interface IUser extends Document {
   location?: string;
   portfolioWebsite?: string;
   reputation?: number;
-  saved: Schema.Types.ObjectId[];
-  joinedAt: Date;
-}
+  saved: Types.ObjectId[] | TQuestionDoc[];
+};
 
-const UserSchema = new Schema({
+export type TUserDoc = TUser &
+  Document & {
+    joinedAt: Date;
+  };
+
+const userSchema = new Schema<TUserDoc>({
   clerkId: { type: String, required: true },
   name: { type: String, required: true },
   username: { type: String, required: true, unique: true },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
+  email: { type: String, required: true, unique: true },
   password: { type: String },
   bio: { type: String },
   picture: { type: String, required: true },
@@ -34,6 +35,6 @@ const UserSchema = new Schema({
   joinedAt: { type: Date, default: Date.now },
 });
 
-const User = models.User || model<IUser>("User", UserSchema);
+const User: Model<TUserDoc> = models.User || model("User", userSchema);
 
 export default User;
