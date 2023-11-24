@@ -11,15 +11,7 @@ import { formatAndDivideNumber } from "@/lib/utils";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
-
-type VotesWithSaveProps = {
-  hasSaved: boolean;
-  type: "Question";
-};
-
-type VotesWithoutSaveProps = {
-  type: "Answer";
-};
+import { toast } from "../ui/use-toast";
 
 type VotesProps = {
   itemId: string;
@@ -28,63 +20,92 @@ type VotesProps = {
   downvotes: number;
   hasUpvoted: boolean;
   hasDownvoted: boolean;
-} & (VotesWithSaveProps | VotesWithoutSaveProps);
+  type: "Question" | "Answer";
+  hasSaved?: boolean;
+};
 
-const Votes = (props: VotesProps) => {
+const Votes = ({
+  itemId,
+  userId,
+  upvotes,
+  downvotes,
+  hasUpvoted,
+  hasDownvoted,
+  type,
+  hasSaved,
+}: VotesProps) => {
   const path = usePathname();
   const router = useRouter();
 
   const handleSave = async () => {
     await toggleSaveQuestion({
-      userId: props.userId,
-      questionId: props.itemId,
-      hasSaved: "hasSaved" in props && props.hasSaved,
+      userId,
+      questionId: itemId,
+      hasSaved,
       path,
+    });
+
+    return toast({
+      title: `Question ${
+        !hasSaved ? "Saved in" : "Removed from"
+      } your collection`,
+      variant: !hasSaved ? "default" : "destructive",
     });
   };
 
   const handleVote = async (action: string) => {
-    if (!props.userId) return;
+    if (!userId) {
+      return toast({
+        title: "Please log in",
+        description: "You must be logged in to perform this action",
+      });
+    }
 
     const params = {
-      userId: props.userId,
-      hasUpvoted: props.hasUpvoted,
-      hasDownvoted: props.hasDownvoted,
+      userId,
+      hasUpvoted,
+      hasDownvoted,
       path,
     };
 
     if (action === "upvote") {
-      if (props.type === "Question") {
-        await upvoteQuestion(
-          Object.assign(params, { questionId: props.itemId })
-        );
-      } else if (props.type === "Answer") {
-        await upvoteAnswer(Object.assign(params, { answerId: props.itemId }));
+      if (type === "Question") {
+        await upvoteQuestion(Object.assign(params, { questionId: itemId }));
+      } else if (type === "Answer") {
+        await upvoteAnswer(Object.assign(params, { answerId: itemId }));
       }
-    } else if (action === "downvote") {
-      if (props.type === "Question") {
-        await downvoteQuestion(
-          Object.assign(params, { questionId: props.itemId })
-        );
-      } else if (props.type === "Answer") {
-        await downvoteAnswer(Object.assign(params, { answerId: props.itemId }));
+      return toast({
+        title: `Upvote ${!hasUpvoted ? "Successful" : "Removed"}`,
+        variant: !hasUpvoted ? "default" : "destructive",
+      });
+    }
+
+    if (action === "downvote") {
+      if (type === "Question") {
+        await downvoteQuestion(Object.assign(params, { questionId: itemId }));
+      } else if (type === "Answer") {
+        await downvoteAnswer(Object.assign(params, { answerId: itemId }));
       }
+      return toast({
+        title: `Downvote ${!hasUpvoted ? "Successful" : "Removed"}`,
+        variant: !hasUpvoted ? "default" : "destructive",
+      });
     }
   };
 
   useEffect(() => {
     viewQuestion({
-      questionId: props.itemId,
-      userId: props.userId,
+      questionId: JSON.parse(itemId),
+      userId: JSON.parse(userId),
     });
-  }, [props.userId, props.itemId, path, router]);
+  }, [userId, itemId, path, router]);
 
   return (
     <div className="flex gap-5">
       <div className="flex-center gap-2.5">
         <div className="flex-center gap-1.5">
           <Image
-            src={`/assets/icons/${props.hasUpvoted ? "upvoted" : "upvote"}.svg`}
+            src={`/assets/icons/${hasUpvoted ? "upvoted" : "upvote"}.svg`}
             width={18}
             height={18}
             alt="upvote"
@@ -94,15 +115,13 @@ const Votes = (props: VotesProps) => {
 
           <div className="flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1">
             <p className="subtle-medium text-dark400_light900">
-              {formatAndDivideNumber(props.upvotes)}
+              {formatAndDivideNumber(upvotes)}
             </p>
           </div>
         </div>
         <div className="flex-center gap-1.5">
           <Image
-            src={`/assets/icons/${
-              props.hasDownvoted ? "downvoted" : "downvote"
-            }.svg`}
+            src={`/assets/icons/${hasDownvoted ? "downvoted" : "downvote"}.svg`}
             width={18}
             height={18}
             alt="downvote"
@@ -112,17 +131,15 @@ const Votes = (props: VotesProps) => {
 
           <div className="flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1">
             <p className="subtle-medium text-dark400_light900">
-              {formatAndDivideNumber(props.downvotes)}
+              {formatAndDivideNumber(downvotes)}
             </p>
           </div>
         </div>
       </div>
 
-      {props.type === "Question" && (
+      {type === "Question" && (
         <Image
-          src={`/assets/icons/${
-            props.hasSaved ? "star-filled" : "star-red"
-          }.svg`}
+          src={`/assets/icons/${hasSaved ? "star-filled" : "star-red"}.svg`}
           width={18}
           height={18}
           alt="star"
