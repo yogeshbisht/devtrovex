@@ -13,7 +13,17 @@ import { getQuestionById } from "@/lib/actions/question.action";
 import { getUserById } from "@/lib/actions/user.action";
 import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
 
-const QuestionPage = async ({ params, searchParams }) => {
+type QuestionPageProps = {
+  params: {
+    id: string;
+  };
+  searchParams: {
+    page?: number;
+    filter?: string;
+  };
+};
+
+const QuestionPage = async ({ params, searchParams }: QuestionPageProps) => {
   const { userId: clerkId } = auth();
 
   let mongoUser;
