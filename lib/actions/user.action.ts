@@ -1,7 +1,7 @@
 "use server";
 
 import { FilterQuery } from "mongoose";
-import User from "@/database/user.model";
+import User, { TUserDoc } from "@/database/user.model";
 import Tag from "@/database/tag.model";
 import { connectToDatabase } from "../mongoose";
 import {
@@ -109,21 +109,19 @@ export async function getAllUsers(params: GetAllUsersParams) {
     const { searchQuery, filter, page = 1, pageSize = 10 } = params;
     const skipAmount = (page - 1) * pageSize;
 
-    const query: FilterQuery<typeof User> = {};
-
-    let sortOptions = {};
+    const query: FilterQuery<TUserDoc> = {};
+    const sortOptions: FilterQuery<TUserDoc> = {};
 
     switch (filter) {
       case "new_users":
-        sortOptions = { joinedAt: -1 };
+        sortOptions.joinedAt = -1;
         break;
       case "old_users":
-        sortOptions = { joinedAt: 1 };
+        sortOptions.joinedAt = 1;
         break;
       case "top_contributors":
-        sortOptions = { reputation: -1 };
+        sortOptions.reputation = -1;
         break;
-
       default:
         break;
     }
@@ -140,8 +138,8 @@ export async function getAllUsers(params: GetAllUsersParams) {
       .skip(skipAmount)
       .limit(pageSize);
 
-    const totalUser = await User.countDocuments(query);
-    const isNext = totalUser > skipAmount + users.length;
+    const totalUsers = await User.countDocuments(query);
+    const isNext = users.length + skipAmount < totalUsers;
 
     return { users, isNext };
   } catch (error) {

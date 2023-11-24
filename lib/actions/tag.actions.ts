@@ -14,6 +14,8 @@ import { Populated } from "@/database/shared.types";
 
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   try {
+    await connectToDatabase();
+
     const { userId } = params;
 
     const user = await User.findById(userId);

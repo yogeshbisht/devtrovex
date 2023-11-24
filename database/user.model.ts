@@ -1,4 +1,4 @@
-import { Schema, models, model, Types, Model } from "mongoose";
+import { Schema, models, model, Types, Model, Document } from "mongoose";
 import { TQuestionDoc } from "./question.model";
 
 export type TUser = {

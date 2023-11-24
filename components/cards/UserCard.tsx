@@ -4,15 +4,10 @@ import Link from "next/link";
 import React from "react";
 import { Badge } from "../ui/badge";
 import RenderTag from "../shared/RenderTag";
+import { TUserDoc } from "@/database/user.model";
 
 type UserCardProps = {
-  user: {
-    _id: string;
-    clerkId: string;
-    picture: string;
-    name: string;
-    username: string;
-  };
+  user: Partial<TUserDoc>;
 };
 
 const UserCard = async ({ user }: UserCardProps) => {
@@ -25,7 +20,7 @@ const UserCard = async ({ user }: UserCardProps) => {
     >
       <article className="background-light900_dark200 light-border flex w-full flex-col items-center justify-center rounded-2xl border p-8">
         <Image
-          src={user.picture}
+          src={user.picture!}
           alt="user profile picture"
           width={100}
           height={100}
