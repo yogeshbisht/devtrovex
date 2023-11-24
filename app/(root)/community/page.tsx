@@ -7,6 +7,11 @@ import Pagination from "@/components/shared/Pagination";
 import { UserFilters } from "@/constants/filters";
 import { getAllUsers } from "@/lib/actions/user.action";
 import { SearchParamsProps } from "@/types";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Community | Devtrovex - Ask Questions, Get Answers",
+};
 
 const CommunityPage = async ({ searchParams }: SearchParamsProps) => {
   const page = searchParams.page ? Number(searchParams.page) : 1;

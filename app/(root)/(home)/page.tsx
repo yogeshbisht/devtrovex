@@ -12,6 +12,12 @@ import { getQuestions } from "@/lib/actions/question.action";
 import { SearchParamsProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Home | Devtrovex - Ask Questions, Get Answers",
+};
+
 export default async function HomePage({ searchParams }: SearchParamsProps) {
   const { userId } = auth();
   const page = searchParams.page ? Number(searchParams.page) : 1;
