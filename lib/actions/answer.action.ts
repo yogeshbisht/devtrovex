@@ -1,6 +1,6 @@
 "use server";
 
-import Answer from "@/database/answer.model";
+import Answer, { TAnswerDoc } from "@/database/answer.model";
 import { connectToDatabase } from "../mongoose";
 import {
   AnswerVoteParams,
@@ -11,7 +11,9 @@ import {
 import Question from "@/database/question.model";
 import { revalidatePath } from "next/cache";
 import Interaction from "@/database/interaction.model";
-import User from "@/database/user.model";
+import User, { TUserDoc } from "@/database/user.model";
+import { Populated } from "@/database/shared.types";
+import { FilterQuery } from "mongoose";
 
 export async function createAnswer(params: CreateAnswerParams) {
   try {
@@ -30,17 +32,23 @@ export async function createAnswer(params: CreateAnswerParams) {
       action: "answer",
       question,
       answer: newAnswer._id,
-      tags: questionObject.tags,
+      tags: questionObject?.tags,
     });
 
     await User.findByIdAndUpdate(author, { $inc: { reputation: 10 } });
 
     revalidatePath(path);
+
+    return newAnswer;
   } catch (error) {
     console.log(error);
     throw error;
   }
 }
+
+type PopulatedUser = {
+  author: Populated<TUserDoc, "id" | "_id" | "clerkId" | "name" | "picture">;
+};
 
 export async function getAnswers(params: GetAnswersParams) {
   try {
@@ -49,35 +57,34 @@ export async function getAnswers(params: GetAnswersParams) {
     const { questionId, sortBy, page = 1, pageSize = 10 } = params;
 
     const skipAmount = (page - 1) * pageSize;
-
-    let sortOptions = {};
+    const sortOptions: FilterQuery<TAnswerDoc> = {};
 
     switch (sortBy) {
       case "highestUpvotes":
-        sortOptions = { upvotes: -1 };
+        sortOptions.upvotes = -1;
         break;
       case "lowestUpvotes":
-        sortOptions = { upvotes: 1 };
+        sortOptions.upvotes = 1;
         break;
       case "oldest":
-        sortOptions = { createdAt: 1 };
+        sortOptions.createdAt = 1;
         break;
       default:
-        sortOptions = { createdAt: -1 };
+        sortOptions.createdAt = -1;
         break;
     }
 
     const answers = await Answer.find({ question: questionId })
-      .populate("author", "_id clerkId name picture")
-      .sort(sortOptions)
+      .populate<PopulatedUser>("author", "_id clerkId name picture")
       .skip(skipAmount)
-      .limit(pageSize);
+      .limit(pageSize)
+      .sort(sortOptions);
 
     const totalAnswers = await Answer.countDocuments({ question: questionId });
 
-    const isNextAnswer = totalAnswers > skipAmount + answers.length;
+    const isNext = skipAmount + answers.length < totalAnswers;
 
-    return { answers, isNextAnswer };
+    return { answers, isNext };
   } catch (error) {
     console.log(error);
     throw error;

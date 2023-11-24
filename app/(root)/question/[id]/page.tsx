@@ -12,27 +12,19 @@ import Votes from "@/components/shared/Votes";
 import { getQuestionById } from "@/lib/actions/question.action";
 import { getUserById } from "@/lib/actions/user.action";
 import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
+import { URLProps } from "@/types";
+import { redirect } from "next/navigation";
 
-type QuestionPageProps = {
-  params: {
-    id: string;
-  };
-  searchParams: {
-    page?: number;
-    filter?: string;
-  };
-};
-
-const QuestionPage = async ({ params, searchParams }: QuestionPageProps) => {
-  const { userId: clerkId } = auth();
-
-  let mongoUser;
-
-  if (clerkId) {
-    mongoUser = await getUserById({ userId: clerkId });
-  }
-
+const QuestionPage = async ({ params, searchParams }: URLProps) => {
+  const page = searchParams.page ? Number(searchParams.page) : 1;
   const result = await getQuestionById({ questionId: params.id });
+  const { userId } = auth();
+
+  if (!userId) redirect("/sign-in");
+  if (!result) redirect("/");
+
+  const mongoUser = await getUserById({ userId });
+  if (!mongoUser) redirect("/");
 
   return (
     <>
@@ -98,7 +90,7 @@ const QuestionPage = async ({ params, searchParams }: QuestionPageProps) => {
       <ParseHTML data={result.content} />
 
       <div className="mt-8 flex flex-wrap gap-2">
-        {result.tags.map((tag: any) => (
+        {result.tags.map((tag) => (
           <RenderTag
             key={tag.id}
             _id={tag.id}
@@ -109,17 +101,17 @@ const QuestionPage = async ({ params, searchParams }: QuestionPageProps) => {
       </div>
 
       <AllAnswers
-        questionId={result._id}
-        userId={mongoUser._id}
+        questionId={result.id}
+        userId={mongoUser.id}
         totalAnswers={result.answers.length}
-        page={searchParams?.page}
-        filter={searchParams?.filter}
+        page={page}
+        filter={searchParams.filter}
       />
 
       <Answer
         question={result.content}
-        questionId={JSON.stringify(result._id)}
-        authorId={JSON.stringify(mongoUser._id)}
+        questionId={result.id}
+        authorId={mongoUser.id}
       />
     </>
   );

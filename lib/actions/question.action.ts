@@ -121,13 +121,16 @@ export async function getQuestionById(params: GetQuestionByIdParams) {
     connectToDatabase();
 
     const { questionId } = params;
-    const question = await Question.findById(questionId)
-      .populate({ path: "tags", model: Tag, select: "_id name" })
-      .populate({
-        path: "author",
-        model: User,
-        select: "_id clerkId name picture",
-      });
+    const question = (await Question.findById(questionId)
+      .populate({ path: "author" })
+      .populate({ path: "tags" })) as Populated<
+      TQuestionDoc,
+      "author" | "tags"
+    >;
+
+    if (!question) {
+      throw new Error("Question not found");
+    }
 
     return question;
   } catch (error) {

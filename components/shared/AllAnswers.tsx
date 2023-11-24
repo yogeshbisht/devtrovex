@@ -13,8 +13,8 @@ type AllAnswersProps = {
   questionId: string;
   userId: string;
   totalAnswers: number;
-  page?: number;
-  filter?: string;
+  page: number;
+  filter: string | undefined;
 };
 
 const AllAnswers = async ({
@@ -26,8 +26,8 @@ const AllAnswers = async ({
 }: AllAnswersProps) => {
   const result = await getAnswers({
     questionId,
-    page: page ? +page : 1,
     sortBy: filter,
+    page,
   });
 
   return (
@@ -69,9 +69,9 @@ const AllAnswers = async ({
                   itemId={JSON.stringify(answer._id)}
                   userId={JSON.stringify(userId)}
                   upvotes={answer.upvotes.length}
-                  hasUpvoted={answer.upvotes.includes(userId)}
                   downvotes={answer.downvotes.length}
-                  hasDownvoted={answer.downvotes.includes(userId)}
+                  hasUpvoted={answer.upvotes.includes(answer.author.id)}
+                  hasDownvoted={answer.downvotes.includes(answer.author.id)}
                 />
               </div>
             </div>
@@ -80,10 +80,7 @@ const AllAnswers = async ({
         ))}
       </div>
       <div className="mt-10 w-full">
-        <Pagination
-          pageNumber={page ? +page : 1}
-          isNext={result.isNextAnswer}
-        />
+        <Pagination pageNumber={page} isNext={result.isNext} />
       </div>
     </div>
   );

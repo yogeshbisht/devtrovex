@@ -16,7 +16,7 @@ import {
 } from "./shared.types";
 import { revalidatePath } from "next/cache";
 import Question, { TQuestionDoc } from "@/database/question.model";
-import Answer from "@/database/answer.model";
+import Answer, { TAnswerDoc } from "@/database/answer.model";
 import { BadgeCriteriaType } from "@/types";
 import { assignBadges } from "../utils";
 import { Populated } from "@/database/shared.types";
@@ -268,7 +268,7 @@ export async function getUserInfo(params: GetUserByIdParams) {
       { $group: { _id: null, totalViews: { $sum: "$views" } } },
     ]);
 
-    const criteria = [
+    const criteria: Array<{ type: BadgeCriteriaType; count: number }> = [
       { type: "QUESTION_COUNT" as BadgeCriteriaType, count: totalQuestions },
       { type: "ANSWER_COUNT" as BadgeCriteriaType, count: totalAnswers },
       {
@@ -329,6 +329,8 @@ export async function getUserQuestions(params: GetUserStatsParams) {
   }
 }
 
+type PopulatedAnswerByUserId = Populated<TAnswerDoc, "author" | "question">[];
+
 export async function getUserAnswers(params: GetUserStatsParams) {
   try {
     connectToDatabase();
@@ -338,27 +340,18 @@ export async function getUserAnswers(params: GetUserStatsParams) {
 
     const totalAnswers = await Answer.countDocuments({ author: userId });
 
-    const userAnswers = await Answer.find({ author: userId })
-      .sort({ upvotes: -1 })
+    const answers = (await Answer.find({ author: userId })
+      .populate("author")
+      .populate("question")
+      .sort({ views: -1, upvotes: -1 })
       .skip(skipAmount)
-      .limit(pageSize)
-      .populate("question", "_id title")
-      .populate("author", "_id clerkId name picture");
+      .limit(pageSize)) as PopulatedAnswerByUserId;
 
-    const isNextAnswer = totalAnswers > skipAmount + userAnswers.length;
+    const isNext = skipAmount + answers.length < totalAnswers;
 
-    return { answers: userAnswers, totalAnswers, isNextAnswer };
+    return { answers, isNext };
   } catch (error) {
     console.log(error);
     throw error;
   }
 }
-
-// export async function getAllUsers(params: GetAllUsersParams) {
-//   try {
-//     connectToDatabase();
-//   } catch (error) {
-//     console.log(error);
-//     throw error;
-//   }
-// }

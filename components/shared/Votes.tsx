@@ -12,152 +12,122 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
+type VotesWithSaveProps = {
+  hasSaved: boolean;
+  type: "Question";
+};
+
+type VotesWithoutSaveProps = {
+  type: "Answer";
+};
+
 type VotesProps = {
-  type: string;
   itemId: string;
   userId: string;
   upvotes: number;
-  hasUpvoted: boolean;
   downvotes: number;
+  hasUpvoted: boolean;
   hasDownvoted: boolean;
-  hasSaved?: boolean;
-};
+} & (VotesWithSaveProps | VotesWithoutSaveProps);
 
-const Votes = ({
-  type,
-  itemId,
-  userId,
-  upvotes,
-  hasUpvoted,
-  downvotes,
-  hasDownvoted,
-  hasSaved,
-}: VotesProps) => {
+const Votes = (props: VotesProps) => {
   const path = usePathname();
   const router = useRouter();
 
   const handleSave = async () => {
     await toggleSaveQuestion({
-      questionId: JSON.parse(itemId),
-      userId: JSON.parse(userId),
+      userId: props.userId,
+      questionId: props.itemId,
+      hasSaved: "hasSaved" in props && props.hasSaved,
       path,
     });
   };
 
   const handleVote = async (action: string) => {
-    if (!userId) {
-      return;
-    }
+    if (!props.userId) return;
+
+    const params = {
+      userId: props.userId,
+      hasUpvoted: props.hasUpvoted,
+      hasDownvoted: props.hasDownvoted,
+      path,
+    };
 
     if (action === "upvote") {
-      if (type === "Question") {
-        await upvoteQuestion({
-          questionId: JSON.parse(itemId),
-          userId: JSON.parse(userId),
-          hasUpvoted,
-          hasDownvoted,
-          path,
-        });
-      } else if (type === "Answer") {
-        await upvoteAnswer({
-          answerId: JSON.parse(itemId),
-          userId: JSON.parse(userId),
-          hasUpvoted,
-          hasDownvoted,
-          path,
-        });
+      if (props.type === "Question") {
+        await upvoteQuestion(
+          Object.assign(params, { questionId: props.itemId })
+        );
+      } else if (props.type === "Answer") {
+        await upvoteAnswer(Object.assign(params, { answerId: props.itemId }));
       }
-
-      // TODO: show a toast
-
-      return;
-    }
-
-    if (action === "downvote") {
-      if (type === "Question") {
-        await downvoteQuestion({
-          questionId: JSON.parse(itemId),
-          userId: JSON.parse(userId),
-          hasUpvoted,
-          hasDownvoted,
-          path,
-        });
-      } else if (type === "Answer") {
-        await downvoteAnswer({
-          answerId: JSON.parse(itemId),
-          userId: JSON.parse(userId),
-          hasUpvoted,
-          hasDownvoted,
-          path,
-        });
+    } else if (action === "downvote") {
+      if (props.type === "Question") {
+        await downvoteQuestion(
+          Object.assign(params, { questionId: props.itemId })
+        );
+      } else if (props.type === "Answer") {
+        await downvoteAnswer(Object.assign(params, { answerId: props.itemId }));
       }
     }
   };
 
   useEffect(() => {
     viewQuestion({
-      questionId: JSON.parse(itemId),
-      userId: userId ? JSON.parse(userId) : undefined,
+      questionId: props.itemId,
+      userId: props.userId,
     });
-  }, [itemId, userId, path, router]);
+  }, [props.userId, props.itemId, path, router]);
 
   return (
     <div className="flex gap-5">
       <div className="flex-center gap-2.5">
         <div className="flex-center gap-1.5">
           <Image
-            src={
-              hasUpvoted
-                ? "/assets/icons/upvoted.svg"
-                : "/assets/icons/upvote.svg"
-            }
+            src={`/assets/icons/${props.hasUpvoted ? "upvoted" : "upvote"}.svg`}
             width={18}
             height={18}
             alt="upvote"
-            className="cursor-pointer"
             onClick={() => handleVote("upvote")}
+            role="button"
           />
 
           <div className="flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1">
             <p className="subtle-medium text-dark400_light900">
-              {formatAndDivideNumber(upvotes)}
+              {formatAndDivideNumber(props.upvotes)}
             </p>
           </div>
         </div>
         <div className="flex-center gap-1.5">
           <Image
-            src={
-              hasDownvoted
-                ? "/assets/icons/downvoted.svg"
-                : "/assets/icons/downvote.svg"
-            }
+            src={`/assets/icons/${
+              props.hasDownvoted ? "downvoted" : "downvote"
+            }.svg`}
             width={18}
             height={18}
             alt="downvote"
-            className="cursor-pointer"
             onClick={() => handleVote("downvote")}
+            role="button"
           />
 
           <div className="flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1">
             <p className="subtle-medium text-dark400_light900">
-              {formatAndDivideNumber(downvotes)}
+              {formatAndDivideNumber(props.downvotes)}
             </p>
           </div>
         </div>
       </div>
 
-      {type === "Question" && (
+      {props.type === "Question" && (
         <Image
-          src={
-            hasSaved
-              ? "/assets/icons/star-filled.svg"
-              : "/assets/icons/star-red.svg"
-          }
+          src={`/assets/icons/${
+            props.hasSaved ? "star-filled" : "star-red"
+          }.svg`}
           width={18}
           height={18}
           alt="star"
-          className="cursor-pointer"
           onClick={handleSave}
+          role="button"
         />
       )}
     </div>

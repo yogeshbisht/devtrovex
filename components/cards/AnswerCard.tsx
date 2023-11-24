@@ -4,33 +4,17 @@ import Link from "next/link";
 import React from "react";
 import Metric from "../shared/Metric";
 import EditDeleteAction from "../shared/EditDeleteAction";
+import { Populated } from "@/database/shared.types";
+import { TAnswerDoc } from "@/database/answer.model";
 
 type AnswerCardProps = {
-  clerkId?: string | null;
-  _id: string;
-  question: {
-    _id: string;
-    title: string;
-  };
-  author: {
-    _id: string;
-    clerkId: string;
-    name: string;
-    picture: string;
-  };
-  upvotes: number;
-  createdAt: Date;
+  answer: Populated<TAnswerDoc, "author" | "question">;
+  clerkId: string | null;
 };
 
-const AnswerCard = ({
-  clerkId,
-  _id,
-  question,
-  author,
-  upvotes,
-  createdAt,
-}: AnswerCardProps) => {
-  const showActionButtons = clerkId && clerkId === author.clerkId;
+const AnswerCard = ({ answer, clerkId }: AnswerCardProps) => {
+  const { _id, createdAt, upvotes, author, question } = answer;
+  const isAuthor = clerkId && clerkId === author.clerkId;
 
   return (
     <Link
@@ -48,7 +32,7 @@ const AnswerCard = ({
         </div>
 
         <SignedIn>
-          {showActionButtons && (
+          {isAuthor && (
             <EditDeleteAction type="Answer" itemId={JSON.stringify(_id)} />
           )}
         </SignedIn>
@@ -69,7 +53,7 @@ const AnswerCard = ({
           <Metric
             imgUrl="/assets/icons/like.svg"
             alt="like icon"
-            value={formatAndDivideNumber(upvotes)}
+            value={formatAndDivideNumber(upvotes.length)}
             title=" Votes"
             textStyles="small-medium text-dark400_light800"
           />

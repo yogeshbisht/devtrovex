@@ -14,6 +14,7 @@ import QuestionsTab from "@/components/shared/QuestionsTab";
 import AnswersTab from "@/components/shared/AnswersTab";
 
 const ProfilePage = async ({ params, searchParams }: URLProps) => {
+  const page = searchParams.page ? Number(searchParams.page) : 1;
   const { userId: clerkId } = auth();
   const userInfo = await getUserInfo({ userId: params.id });
 
@@ -81,7 +82,7 @@ const ProfilePage = async ({ params, searchParams }: URLProps) => {
       </div>
 
       <Stats
-        reputation={userInfo.reputation}
+        reputation={userInfo.reputation || 0}
         totalQuestions={userInfo.totalQuestions}
         totalAnswers={userInfo.totalAnswers}
         badges={userInfo.badgeCounts}
@@ -99,14 +100,14 @@ const ProfilePage = async ({ params, searchParams }: URLProps) => {
           </TabsList>
           <TabsContent value="top-posts">
             <QuestionsTab
-              searchParams={searchParams}
+              page={page}
               userId={userInfo.user._id}
               clerkId={clerkId}
             />
           </TabsContent>
           <TabsContent value="answers" className="flex w-full flex-col gap-6">
             <AnswersTab
-              searchParams={searchParams}
+              page={page}
               userId={userInfo.user._id}
               clerkId={clerkId}
             />
