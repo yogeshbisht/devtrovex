@@ -39,6 +39,10 @@
     @apply bg-light-800 dark:bg-dark-300 !important;
   }
 
+  .text-light900_dark100 {
+    @apply text-light-900 dark:text-dark-100;
+  }
+
   .text-dark100_light900 {
     @apply text-dark-100 dark:text-light-900 !important;
   }

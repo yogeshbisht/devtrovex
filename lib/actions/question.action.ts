@@ -10,11 +10,12 @@ import {
   GetQuestionByIdParams,
   GetQuestionsParams,
   QuestionVoteParams,
+  RecommendedParams,
 } from "./shared.types";
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
 import Answer from "@/database/answer.model";
-import Interaction from "@/database/interaction.model";
+import Interaction, { TInteractionDoc } from "@/database/interaction.model";
 import { FilterQuery } from "mongoose";
 import { Populated } from "@/database/shared.types";
 
@@ -279,6 +280,71 @@ export async function getHotQuestions() {
       .limit(5);
 
     return { hotQuestions };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getRecommendedQuestions(params: RecommendedParams) {
+  try {
+    connectToDatabase();
+
+    const { userId, page = 1, pageSize = 20, searchQuery } = params;
+
+    // Find user
+    const user = await User.findOne({ clerkId: userId });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const skipAmount = (page - 1) * pageSize;
+
+    // Find user's interactions
+    const interactions = await Interaction.find({ user: user._id }).populate(
+      "tags"
+    );
+
+    // Extract tags from interactions
+    const userTags = [];
+    for (const interaction of interactions) {
+      if (interaction.tags.length > 0) {
+        userTags.push(...interaction.tags);
+      }
+    }
+
+    // Get distinct tag IDs from user's interactions
+    const distinctTagIds = Array.from(new Set(userTags.map((tag) => tag._id)));
+
+    const query: FilterQuery<TInteractionDoc> = {
+      $and: [{ tags: { $in: distinctTagIds } }, { author: { $ne: user._id } }],
+    };
+
+    if (searchQuery) {
+      query.$or = [
+        { title: { $regex: new RegExp(searchQuery, "i") } },
+        { content: { $regex: new RegExp(searchQuery, "i") } },
+      ];
+    }
+
+    const totalQuestions = await Question.countDocuments(query);
+
+    const recommendedQuestions = (await Question.find(query)
+      .populate({
+        path: "tags",
+        model: Tag,
+      })
+      .populate({
+        path: "author",
+        model: User,
+      })
+      .skip(skipAmount)
+      .limit(pageSize)) as Populated<TQuestionDoc, "author" | "tags">[];
+
+    const isNext = skipAmount + recommendedQuestions.length < totalQuestions;
+
+    return { questions: recommendedQuestions, isNext };
   } catch (error) {
     console.log(error);
     throw error;

@@ -8,7 +8,10 @@ import NoResult from "@/components/shared/NoResult";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
-import { getQuestions } from "@/lib/actions/question.action";
+import {
+  getQuestions,
+  getRecommendedQuestions,
+} from "@/lib/actions/question.action";
 import { SearchParamsProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
 
@@ -22,11 +25,28 @@ export default async function HomePage({ searchParams }: SearchParamsProps) {
   const { userId } = auth();
   const page = searchParams.page ? Number(searchParams.page) : 1;
 
-  const result = await getQuestions({
-    searchQuery: searchParams.q,
-    filter: searchParams.filter,
-    page,
-  });
+  let result;
+
+  if (searchParams?.filter === "recommended") {
+    if (userId) {
+      result = await getRecommendedQuestions({
+        userId,
+        searchQuery: searchParams.q,
+        page,
+      });
+    } else {
+      result = {
+        question: [],
+        isNext: false,
+      };
+    }
+  } else {
+    result = await getQuestions({
+      searchQuery: searchParams.q,
+      filter: searchParams.filter,
+      page,
+    });
+  }
 
   return (
     <>
@@ -55,7 +75,7 @@ export default async function HomePage({ searchParams }: SearchParamsProps) {
       <HomeFilters />
 
       <div className="mt-10 flex w-full flex-col gap-6">
-        {result.questions.length > 0 ? (
+        {result.questions && result.questions.length > 0 ? (
           result.questions.map((question) => (
             <QuestionCard
               key={question._id}
