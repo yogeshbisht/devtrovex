@@ -31,7 +31,6 @@ export default async function CollectionPage({
         <LocalSearchBar
           route="/"
           iconPosition="right"
-          imgSrc="/assets/icons/search.svg"
           placeholder="Search for questions"
           otherClasses="flex-1"
         />

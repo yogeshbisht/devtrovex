@@ -62,7 +62,6 @@ export default async function HomePage({ searchParams }: SearchParamsProps) {
         <LocalSearchBar
           route="/"
           iconPosition="right"
-          imgSrc="/assets/icons/search.svg"
           placeholder="Search for questions"
           otherClasses="flex-1"
         />

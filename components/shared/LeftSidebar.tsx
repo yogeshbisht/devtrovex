@@ -34,16 +34,12 @@ const LeftSidebar = () => {
               href={item.route}
               className={`${
                 isActive
-                  ? "primary-gradient rounded-lg text-light-900"
+                  ? "primary-gradient text-light-900"
                   : "text-dark300_light900"
               } flex items-center justify-start gap-4 bg-transparent p-4`}
             >
-              <Image
-                src={item.imgURL}
-                width={20}
-                height={20}
-                alt={item.label}
-                className={`${isActive ? "" : "invert-colors"}`}
+              <item.icon
+                className={`${isActive ? "" : "invert-colors"} h-6 w-6`}
               />
               <p
                 className={`${
@@ -60,7 +56,7 @@ const LeftSidebar = () => {
       <SignedOut>
         <div className="flex flex-col gap-3">
           <Link href="/sign-in">
-            <Button className="small-medium btn-secondary min-h-[41px] w-full rounded-lg px-4 py-3 shadow-none">
+            <Button className="small-medium btn-secondary min-h-[41px] w-full px-4 py-3 shadow-none">
               <Image
                 src="/assets/icons/account.svg"
                 width={20}
@@ -74,7 +70,7 @@ const LeftSidebar = () => {
             </Button>
           </Link>
           <Link href="/sign-up">
-            <Button className="small-medium light-border-2 btn-tertiary text-dark400_light900 min-h-[41px] w-full rounded-lg border px-4 py-3 shadow-none">
+            <Button className="small-medium light-border-2 btn-tertiary text-dark400_light900 min-h-[41px] w-full border px-4 py-3 shadow-none">
               <Image
                 src="/assets/icons/sign-up.svg"
                 width={20}

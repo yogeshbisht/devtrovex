@@ -1,15 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import { Input } from "@/components/ui/input";
+import { SearchIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Input } from "@/components/ui/input";
 import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
 
 type LocalSearchBarProps = {
   route: string;
   iconPosition: string;
-  imgSrc: string;
   placeholder: string;
   otherClasses: string;
 };
@@ -17,7 +16,6 @@ type LocalSearchBarProps = {
 const LocalSearchBar = ({
   route,
   iconPosition,
-  imgSrc,
   placeholder,
   otherClasses,
 }: LocalSearchBarProps) => {
@@ -56,17 +54,9 @@ const LocalSearchBar = ({
 
   return (
     <div
-      className={`background-light800_darkgradient flex min-h-[56px] grow items-center gap-4 rounded-[10px] px-4 ${otherClasses}`}
+      className={`background-light800_darkgradient flex min-h-[56px] grow items-center gap-4 px-4 ${otherClasses}`}
     >
-      {iconPosition === "left" && (
-        <Image
-          src={imgSrc}
-          alt="search icon"
-          width={24}
-          height={24}
-          className="cursor-pointer"
-        />
-      )}
+      {iconPosition === "left" && <SearchIcon size={24} />}
       <Input
         type="text"
         placeholder={placeholder}
@@ -76,13 +66,7 @@ const LocalSearchBar = ({
       />
 
       {iconPosition === "right" && (
-        <Image
-          src={imgSrc}
-          alt="search icon"
-          width={24}
-          height={24}
-          className="cursor-pointer"
-        />
+        <SearchIcon size={24} className="text-dark400_light700" />
       )}
     </div>
   );

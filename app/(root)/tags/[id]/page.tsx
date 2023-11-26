@@ -28,7 +28,6 @@ const TagDetailsPage = async ({ params, searchParams }: URLProps) => {
         <LocalSearchBar
           route={`/tags/${params.id}`}
           iconPosition="right"
-          imgSrc="/assets/icons/search.svg"
           placeholder="Search tag questions"
           otherClasses="flex-1"
         />

@@ -29,7 +29,6 @@ const CommunityPage = async ({ searchParams }: SearchParamsProps) => {
         <LocalSearchBar
           route="/community"
           iconPosition="right"
-          imgSrc="/assets/icons/search.svg"
           placeholder="Search for amazing minds"
           otherClasses="flex-1"
         />

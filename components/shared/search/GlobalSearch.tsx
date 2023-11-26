@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { Input } from "@/components/ui/input";
 import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
 import GlobalResult from "./GlobalResult";
+import { SearchIcon } from "lucide-react";
 
 const GlobalSearch = () => {
   const router = useRouter();
@@ -70,14 +70,8 @@ const GlobalSearch = () => {
       className="relative w-full max-w-[600px] max-lg:hidden"
       ref={searchContainerRef}
     >
-      <div className="background-light800_darkgradient relative flex min-h-[56px] grow items-center gap-1 rounded-xl px-4">
-        <Image
-          src="/assets/icons/search.svg"
-          width={24}
-          height={24}
-          alt="search"
-          className="cursor-pointer"
-        />
+      <div className="background-light800_darkgradient relative flex min-h-[56px] grow items-center gap-1 px-4">
+        <SearchIcon size={24} />
         <Input
           type="text"
           placeholder="Search globally"

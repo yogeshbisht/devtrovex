@@ -1,4 +1,13 @@
 import { SidebarLink } from "@/types";
+import {
+  Briefcase,
+  HelpCircle,
+  Home,
+  Star,
+  Tag,
+  User,
+  Users,
+} from "lucide-react";
 
 export const themes = [
   { value: "light", label: "Light", icon: "/assets/icons/sun.svg" },
@@ -8,39 +17,39 @@ export const themes = [
 
 export const sidebarLinks: SidebarLink[] = [
   {
-    imgURL: "/assets/icons/home.svg",
     route: "/",
     label: "Home",
+    icon: Home,
   },
   {
-    imgURL: "/assets/icons/users.svg",
     route: "/community",
     label: "Community",
+    icon: Users,
   },
   {
-    imgURL: "/assets/icons/star.svg",
     route: "/collection",
     label: "Collections",
+    icon: Star,
   },
   {
-    imgURL: "/assets/icons/suitcase.svg",
     route: "/jobs",
     label: "Find Jobs",
+    icon: Briefcase,
   },
   {
-    imgURL: "/assets/icons/tag.svg",
     route: "/tags",
     label: "Tags",
+    icon: Tag,
   },
   {
-    imgURL: "/assets/icons/user.svg",
     route: "/profile",
     label: "Profile",
+    icon: User,
   },
   {
-    imgURL: "/assets/icons/question.svg",
     route: "/ask-question",
     label: "Ask a question",
+    icon: HelpCircle,
   },
 ];
 
