@@ -148,6 +148,22 @@ body {
   );
 }
 
+.sidebar-wrap {
+  @apply flex flex-1 flex-col gap-4;
+}
+
+.sidebar-link {
+  @apply flex items-center lg:justify-start justify-center lg:pl-10 gap-4 py-4;
+}
+
+.search-bar {
+  @apply bg-light-800 dark:dark-gradient flex h-full relative grow items-center gap-1 px-4;
+}
+
+.search-input {
+  @apply no-focus border-none bg-transparent shadow-none outline-none text-[16px] font-normal placeholder:text-light-400 dark:placeholder:text-light-500 text-dark-400 dark:text-light-700 min-h-[48px];
+}
+
 .primary-text-gradient {
   background: linear-gradient(129deg, #008fff 0%, #5fa8e2 100%);
   background-clip: text;

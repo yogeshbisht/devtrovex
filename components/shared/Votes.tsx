@@ -113,7 +113,7 @@ const Votes = ({
             role="button"
           />
 
-          <div className="flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1">
+          <div className="flex-center background-light700_dark400 min-w-[18px] p-1">
             <p className="subtle-medium text-dark400_light900">
               {formatAndDivideNumber(upvotes)}
             </p>
@@ -129,7 +129,7 @@ const Votes = ({
             role="button"
           />
 
-          <div className="flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1">
+          <div className="flex-center background-light700_dark400 min-w-[18px] p-1">
             <p className="subtle-medium text-dark400_light900">
               {formatAndDivideNumber(downvotes)}
             </p>

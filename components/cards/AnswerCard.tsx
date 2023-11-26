@@ -19,7 +19,7 @@ const AnswerCard = ({ answer, clerkId }: AnswerCardProps) => {
   return (
     <Link
       href={`/question/${question._id}/#${_id}`}
-      className="card-wrapper rounded-[10px] px-11 py-9"
+      className="card-wrapper px-11 py-9"
     >
       <div className="flex flex-col-reverse items-start justify-between gap-5 sm:flex-row">
         <div>

@@ -2,11 +2,11 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { SearchIcon } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
-import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
 import GlobalResult from "./GlobalResult";
-import { SearchIcon } from "lucide-react";
+import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
 
 const GlobalSearch = () => {
   const router = useRouter();
@@ -67,11 +67,11 @@ const GlobalSearch = () => {
 
   return (
     <div
-      className="relative w-full max-w-[600px] max-lg:hidden"
+      className="relative w-full max-w-[440px] max-md:hidden lg:max-w-[540px]"
       ref={searchContainerRef}
     >
-      <div className="background-light800_darkgradient relative flex min-h-[56px] grow items-center gap-1 px-4">
-        <SearchIcon size={24} />
+      <div className="search-bar">
+        <SearchIcon size={18} />
         <Input
           type="text"
           placeholder="Search globally"
@@ -81,7 +81,7 @@ const GlobalSearch = () => {
             if (!isOpen) setIsOpen(true);
             if (e.target.value === "" && isOpen) setIsOpen(false);
           }}
-          className="paragraph-regular no-focus placeholder text-dark400_light700 border-none bg-transparent shadow-none outline-none"
+          className="search-input"
         />
       </div>
       {isOpen && <GlobalResult />}

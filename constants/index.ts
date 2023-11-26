@@ -3,16 +3,19 @@ import {
   Briefcase,
   HelpCircle,
   Home,
+  Laptop2,
+  Moon,
   Star,
+  Sun,
   Tag,
   User,
   Users,
 } from "lucide-react";
 
 export const themes = [
-  { value: "light", label: "Light", icon: "/assets/icons/sun.svg" },
-  { value: "dark", label: "Dark", icon: "/assets/icons/moon.svg" },
-  { value: "system", label: "System", icon: "/assets/icons/computer.svg" },
+  { value: "light", label: "Light", icon: Sun },
+  { value: "dark", label: "Dark", icon: Moon },
+  { value: "system", label: "System", icon: Laptop2 },
 ];
 
 export const sidebarLinks: SidebarLink[] = [

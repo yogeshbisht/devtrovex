@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { SearchIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+
 import { Input } from "@/components/ui/input";
 import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
 
@@ -53,21 +54,17 @@ const LocalSearchBar = ({
   }, [search, route, pathname, router, searchParams, query]);
 
   return (
-    <div
-      className={`background-light800_darkgradient flex min-h-[56px] grow items-center gap-4 px-4 ${otherClasses}`}
-    >
+    <div className={`search-bar ${otherClasses}`}>
       {iconPosition === "left" && <SearchIcon size={24} />}
       <Input
         type="text"
         placeholder={placeholder}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="paragraph-regular no-focus placeholder text-dark400_light700 border-none bg-transparent shadow-none outline-none"
+        className="search-input"
       />
 
-      {iconPosition === "right" && (
-        <SearchIcon size={24} className="text-dark400_light700" />
-      )}
+      {iconPosition === "right" && <SearchIcon size={20} />}
     </div>
   );
 };
