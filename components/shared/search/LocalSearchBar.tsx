@@ -55,7 +55,7 @@ const LocalSearchBar = ({
 
   return (
     <div className={`search-bar ${otherClasses}`}>
-      {iconPosition === "left" && <SearchIcon size={24} />}
+      {iconPosition === "left" && <SearchIcon size={18} />}
       <Input
         type="text"
         placeholder={placeholder}
@@ -64,7 +64,7 @@ const LocalSearchBar = ({
         className="search-input"
       />
 
-      {iconPosition === "right" && <SearchIcon size={20} />}
+      {iconPosition === "right" && <SearchIcon size={18} />}
     </div>
   );
 };

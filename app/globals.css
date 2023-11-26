@@ -161,7 +161,7 @@ body {
 }
 
 .search-input {
-  @apply no-focus border-none bg-transparent shadow-none outline-none text-[16px] font-normal placeholder:text-light-400 dark:placeholder:text-light-500 text-dark-400 dark:text-light-700 min-h-[48px];
+  @apply no-focus border-none bg-transparent shadow-none outline-none font-normal placeholder:text-light-400 dark:placeholder:text-light-500 text-dark-400 dark:text-light-700 min-h-[48px];
 }
 
 .primary-text-gradient {

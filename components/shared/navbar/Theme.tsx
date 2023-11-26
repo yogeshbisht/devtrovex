@@ -20,11 +20,13 @@ const Theme = () => {
     <Menubar className="relative border-none bg-transparent shadow-none">
       <MenubarMenu>
         <MenubarTrigger className="focus:bg-light-900 data-[state=open]:bg-light-900 dark:focus:bg-dark-200 dark:data-[state=open]:bg-dark-200">
-          {mode === "light" ? (
-            <Sun className="active-theme" size={20} />
-          ) : (
-            <Moon className="active-theme" size={20} />
-          )}
+          <div className="active-theme rounded-full border p-1.5">
+            {mode === "light" ? (
+              <Sun className="active-theme" size={18} />
+            ) : (
+              <Moon className="active-theme" size={18} />
+            )}
+          </div>
         </MenubarTrigger>
         <MenubarContent className="absolute right-[-3rem] mt-3 min-w-[120px] border bg-light-900 py-2 dark:border-dark-400 dark:bg-dark-300">
           {themes.map((item) => (

@@ -61,7 +61,10 @@ const MobileSidebar = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <MenuIcon size={32} className="lg:hidden" />
+        <MenuIcon
+          size={32}
+          className="active-theme rounded-full border p-1.5 lg:hidden"
+        />
       </SheetTrigger>
       <SheetContent
         side="left"

@@ -136,7 +136,7 @@ const Question = ({ type, mongoUserId, questionDetails }: QuestionProps) => {
               </FormLabel>
               <FormControl>
                 <Input
-                  className="no-focus paragraph-regular background-light900_dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
+                  className="no-focus paragraph-regular background-light900_dark300 light-border-2 text-dark300_light700 min-h-[48px] border"
                   {...field}
                 />
               </FormControl>
@@ -218,7 +218,7 @@ const Question = ({ type, mongoUserId, questionDetails }: QuestionProps) => {
                 <>
                   <Input
                     disabled={type === "Edit"}
-                    className="no-focus paragraph-regular background-light900_dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
+                    className="no-focus paragraph-regular background-light900_dark300 light-border-2 text-dark300_light700 min-h-[48px] border"
                     placeholder="Add tags..."
                     onKeyDown={(e) => handleInputKeyDown(e, field)}
                   />

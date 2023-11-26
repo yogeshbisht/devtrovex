@@ -9,7 +9,7 @@ const Loading = () => {
         <h1 className="h1-bold text-dark100_light900">All Questions</h1>
 
         <Link href="/ask-question" className="flex justify-end max-sm:w-full">
-          <Button className="primary-gradient min-h-[46px] px-4 py-3 !text-light-900">
+          <Button className="primary-gradient min-h-[48px] px-4 py-3 !text-light-900">
             Ask a Question
           </Button>
         </Link>
@@ -23,10 +23,9 @@ const Loading = () => {
       </div>
 
       <div className="my-10 hidden flex-wrap gap-6 md:flex">
-        <Skeleton className="h-9 w-40" />
-        <Skeleton className="h-9 w-40" />
-        <Skeleton className="h-9 w-40" />
-        <Skeleton className="h-9 w-40" />
+        {[1, 2, 3, 4].map((item) => (
+          <Skeleton key={item} className="h-9 w-40" />
+        ))}
       </div>
 
       <div className="flex flex-col gap-6">

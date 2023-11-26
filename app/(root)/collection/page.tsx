@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+import { auth } from "@clerk/nextjs";
 import QuestionCard from "@/components/cards/QuestionCard";
 import Filter from "@/components/shared/Filter";
 import NoResult from "@/components/shared/NoResult";
@@ -6,8 +8,6 @@ import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { QuestionFilters } from "@/constants/filters";
 import { getSavedQuestions } from "@/lib/actions/user.action";
 import { SearchParamsProps } from "@/types";
-import { auth } from "@clerk/nextjs";
-import { redirect } from "next/navigation";
 
 export default async function CollectionPage({
   searchParams,
@@ -36,7 +36,7 @@ export default async function CollectionPage({
         />
         <Filter
           filters={QuestionFilters}
-          otherClasses="min-h-[56px] sm:min-w-[170px]"
+          otherClasses="min-h-[48px] sm:min-w-[170px]"
         />
       </div>
 
