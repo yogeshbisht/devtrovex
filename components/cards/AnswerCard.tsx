@@ -1,6 +1,11 @@
-import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
+import {
+  formatAndDivideNumber,
+  getPluralString,
+  getTimestamp,
+} from "@/lib/utils";
 import { SignedIn } from "@clerk/nextjs";
 import Link from "next/link";
+import Image from "next/image";
 import React from "react";
 import Metric from "../shared/Metric";
 import EditDeleteAction from "../shared/EditDeleteAction";
@@ -39,22 +44,26 @@ const AnswerCard = ({ answer, clerkId }: AnswerCardProps) => {
       </div>
 
       <div className="flex-between mt-6 w-full flex-wrap gap-3">
-        <Metric
-          imgUrl={author.picture}
-          alt="user avatar"
-          value={author.name}
-          title={` • asked ${getTimestamp(createdAt)}`}
-          href={`/profile/${author.clerkId}`}
-          textStyles="body-medium text-dark400_light700"
-          isAuthor
-        />
-
+        <Link href={`/profile/${author.clerkId}`} className="flex-center gap-1">
+          <Image
+            src={author.picture}
+            alt="user avatar"
+            width={16}
+            height={16}
+            className="rounded-full object-contain"
+          />
+          <p className="body-medium text-dark400_light700 flex items-center gap-1">
+            {author.name}
+            <span className="small-regular line-clamp-1 max-sm:hidden">
+              {` • asked ${getTimestamp(createdAt)}`}
+            </span>
+          </p>
+        </Link>
         <div className="flex-center gap-3">
           <Metric
-            imgUrl="/assets/icons/like.svg"
-            alt="like icon"
+            iconName="thumbs-up"
             value={formatAndDivideNumber(upvotes.length)}
-            title=" Votes"
+            title={getPluralString(upvotes.length, "upvote")}
             textStyles="small-medium text-dark400_light800"
           />
         </div>

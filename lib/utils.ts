@@ -1,6 +1,6 @@
+import qs from "query-string";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import qs from "query-string";
 import { BADGE_CRITERIA } from "@/constants";
 import { BadgeCounts } from "@/types";
 
@@ -8,38 +8,58 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const getTimestamp = (createdAt: Date): string => {
-  const now = new Date();
-  const timeDifference = now.getTime() - createdAt.getTime();
+export function getPluralString(num: number, str: string) {
+  return num > 1 ? `${str}s` : str;
+}
 
+export const getTimestamp = (createdAt: string | Date) => {
   const minute = 60 * 1000;
   const hour = 60 * minute;
   const day = 24 * hour;
   const week = 7 * day;
   const month = 30 * day;
-  const year = 365 * day;
+  const year = 365 * month;
 
-  if (timeDifference < minute) {
-    const seconds = Math.floor(timeDifference / 1000);
-    return `${seconds} ${seconds === 1 ? "second" : "seconds"} ago`;
-  } else if (timeDifference < hour) {
-    const minutes = Math.floor(timeDifference / minute);
-    return `${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`;
-  } else if (timeDifference < day) {
-    const hours = Math.floor(timeDifference / hour);
-    return `${hours} ${hours === 1 ? "hour" : "hours"} ago`;
-  } else if (timeDifference < week) {
-    const days = Math.floor(timeDifference / day);
-    return `${days} ${days === 1 ? "day" : "days"} ago`;
-  } else if (timeDifference < month) {
-    const weeks = Math.floor(timeDifference / week);
-    return `${weeks} ${weeks === 1 ? "week" : "weeks"} ago`;
-  } else if (timeDifference < year) {
-    const months = Math.floor(timeDifference / month);
-    return `${months} ${months === 1 ? "month" : "months"} ago`;
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const now = new Date();
+  const createdDate = new Date(createdAt);
+  const createdDay = createdDate.getDate();
+  const createdMonth = createdDate.getMonth();
+  const createdYear = createdDate.getFullYear();
+  const timeDifferent = now.getTime() - createdDate.getTime();
+
+  if (timeDifferent < minute) {
+    return "less a minute";
+  } else if (timeDifferent < hour) {
+    const minutes = Math.round(timeDifferent / minute);
+    return `${minutes} ${getPluralString(minutes, "minute")} ago`;
+  } else if (timeDifferent > hour && timeDifferent < day) {
+    const hours = Math.round(timeDifferent / hour);
+    return `${hours} ${getPluralString(hours, "hour")} ago`;
+  } else if (timeDifferent > day && timeDifferent < week) {
+    const days = Math.round(timeDifferent / day);
+    return `${days} ${getPluralString(days, "day")} ago`;
+  } else if (timeDifferent > week && timeDifferent < month) {
+    const weeks = Math.round(timeDifferent / week);
+    return `${weeks} ${getPluralString(weeks, "week")} ago`;
+  } else if (timeDifferent > month && timeDifferent < year) {
+    return `${months[createdMonth]} ${createdDay}`;
   } else {
-    const years = Math.floor(timeDifference / year);
-    return `${years} ${years === 1 ? "year" : "years"} ago`;
+    return `${createdDay} ${months[createdMonth]} ${createdYear}`;
   }
 };
 

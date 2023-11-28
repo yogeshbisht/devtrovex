@@ -1,6 +1,6 @@
 import { SidebarLink } from "@/types";
 import {
-  Briefcase,
+  // Briefcase,
   HelpCircle,
   Home,
   Laptop2,
@@ -34,11 +34,11 @@ export const sidebarLinks: SidebarLink[] = [
     label: "Collections",
     icon: Star,
   },
-  {
-    route: "/jobs",
-    label: "Find Jobs",
-    icon: Briefcase,
-  },
+  // {
+  //   route: "/jobs",
+  //   label: "Find Jobs",
+  //   icon: Briefcase,
+  // },
   {
     route: "/tags",
     label: "Tags",

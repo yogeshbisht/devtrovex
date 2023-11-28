@@ -1,12 +1,12 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SignedOut, useAuth } from "@clerk/nextjs";
 
 import Logo from "../navbar/Logo";
+import { UserCircle2, UserPlus2 } from "lucide-react";
 import { sidebarLinks } from "@/constants";
 import { Button } from "@/components/ui/button";
 
@@ -44,15 +44,10 @@ const LeftSidebar = () => {
                 } sidebar-link`}
               >
                 <item.icon
-                  className={`${isActive ? "" : "invert-colors"} h-6 w-6`}
+                  className={`${isActive ? "" : "invert-colors"}`}
+                  size={24}
                 />
-                <p
-                  className={`${
-                    isActive ? "base-bold" : "base-medium"
-                  } max-lg:hidden`}
-                >
-                  {item.label}
-                </p>
+                <p className="base-medium max-lg:hidden">{item.label}</p>
               </Link>
             );
           })}
@@ -63,13 +58,7 @@ const LeftSidebar = () => {
         <div className="flex flex-col gap-3">
           <Link href="/sign-in">
             <Button className="small-medium btn-secondary min-h-[48px] w-full px-4 py-3 shadow-none">
-              <Image
-                src="/assets/icons/account.svg"
-                width={20}
-                height={20}
-                alt="Login"
-                className="invert-colors lg:hidden"
-              />
+              <UserCircle2 size={24} className="invert-colors lg:hidden" />
               <span className="primary-text-gradient max-lg:hidden">
                 Log In
               </span>
@@ -77,13 +66,7 @@ const LeftSidebar = () => {
           </Link>
           <Link href="/sign-up">
             <Button className="small-medium light-border-2 btn-tertiary text-dark400_light900 min-h-[48px] w-full border px-4 py-3 shadow-none">
-              <Image
-                src="/assets/icons/sign-up.svg"
-                width={20}
-                height={20}
-                alt="Login"
-                className="invert-colors lg:hidden"
-              />
+              <UserPlus2 size={24} className="invert-colors lg:hidden" />
               <span className="max-lg:hidden">Register</span>
             </Button>
           </Link>

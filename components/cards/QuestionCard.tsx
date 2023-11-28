@@ -1,10 +1,15 @@
-import Link from "next/link";
 import React from "react";
+import Link from "next/link";
+import Image from "next/image";
 import RenderTag from "../shared/RenderTag";
 import Metric from "../shared/Metric";
-import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
-import { SignedIn } from "@clerk/nextjs";
 import EditDeleteAction from "../shared/EditDeleteAction";
+import {
+  formatAndDivideNumber,
+  getPluralString,
+  getTimestamp,
+} from "@/lib/utils";
+import { SignedIn } from "@clerk/nextjs";
 import { Populated } from "@/database/shared.types";
 import { TQuestionDoc } from "@/database/question.model";
 
@@ -44,36 +49,38 @@ const QuestionCard = ({ question, clerkId }: QuestionCardProps) => {
       </div>
 
       <div className="flex-between mt-6 w-full flex-wrap gap-3">
-        <Metric
-          imgUrl={author.picture}
-          alt="user"
-          value={author.name}
-          title={` - asked ${getTimestamp(createdAt)}`}
-          href={`/profile/${author?.clerkId}`}
-          isAuthor
-          textStyles="body-medium text-dark400_light700"
-        />
-
+        <Link href={`/profile/${author.clerkId}`} className="flex-center gap-1">
+          <Image
+            src={author.picture}
+            alt="user"
+            width={16}
+            height={16}
+            className="rounded-full object-contain"
+          />
+          <p className="body-medium text-dark400_light700 flex items-center gap-1">
+            {author.name}
+            <span className="small-regular line-clamp-1 max-sm:hidden">
+              {` - asked ${getTimestamp(createdAt)}`}
+            </span>
+          </p>
+        </Link>
         <div className="flex items-center gap-3 max-sm:flex-wrap max-sm:justify-start">
           <Metric
-            imgUrl="/assets/icons/like.svg"
-            alt="upvotes"
+            iconName="thumbs-up"
             value={formatAndDivideNumber(upvotes.length)}
-            title=" Votes"
+            title={getPluralString(upvotes.length, "upvote")}
             textStyles="small-medium text-dark400_light800"
           />
           <Metric
-            imgUrl="/assets/icons/message.svg"
-            alt="message"
+            iconName="message-circle"
             value={formatAndDivideNumber(answers.length)}
-            title=" Answers"
+            title={getPluralString(answers.length, "answer")}
             textStyles="small-medium text-dark400_light800"
           />
           <Metric
-            imgUrl="/assets/icons/eye.svg"
-            alt="eye"
+            iconName="eye"
             value={formatAndDivideNumber(views)}
-            title=" Views"
+            title={getPluralString(views, "view")}
             textStyles="small-medium text-dark400_light800"
           />
         </div>

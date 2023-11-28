@@ -6,6 +6,7 @@ const nextConfig = {
       { protocol: "http", hostname: "*" },
     ],
   },
+  transpilePackages: ["lucide-react"],
 };
 
 module.exports = nextConfig;

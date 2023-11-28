@@ -131,7 +131,7 @@ const Question = ({ type, mongoUserId, questionDetails }: QuestionProps) => {
           name="title"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col">
-              <FormLabel className="paragraph-semibold text-dark400_light800">
+              <FormLabel className="paragraph-semibold text-dark400_light800 mb-1.5">
                 Question Title <span className="text-primary-500">*</span>
               </FormLabel>
               <FormControl>
@@ -152,8 +152,8 @@ const Question = ({ type, mongoUserId, questionDetails }: QuestionProps) => {
           control={form.control}
           name="explanation"
           render={({ field }) => (
-            <FormItem className="flex w-full flex-col gap-3">
-              <FormLabel className="paragraph-semibold text-dark400_light800">
+            <FormItem className="flex w-full flex-col">
+              <FormLabel className="paragraph-semibold text-dark400_light800 mb-1.5">
                 Detailed explanation of your problem{" "}
                 <span className="text-primary-500">*</span>
               </FormLabel>
@@ -210,8 +210,8 @@ const Question = ({ type, mongoUserId, questionDetails }: QuestionProps) => {
           control={form.control}
           name="tags"
           render={({ field }) => (
-            <FormItem className="flex w-full flex-col gap-3">
-              <FormLabel className="paragraph-semibold text-dark400_light800">
+            <FormItem className="flex w-full flex-col">
+              <FormLabel className="paragraph-semibold text-dark400_light800 mb-1.5">
                 Tags <span className="text-primary-500">*</span>
               </FormLabel>
               <FormControl>
@@ -252,8 +252,8 @@ const Question = ({ type, mongoUserId, questionDetails }: QuestionProps) => {
                 </>
               </FormControl>
               <FormDescription className="body-regular mt-2.5 text-light-500">
-                Add up to 3 tags to describe what your question is about. You
-                need to press enter to add a tag.
+                Add up to 3 tags to describe your question. Press enter to add
+                the tag.
               </FormDescription>
               <FormMessage className="text-red-900" />
             </FormItem>
@@ -261,7 +261,7 @@ const Question = ({ type, mongoUserId, questionDetails }: QuestionProps) => {
         />
         <Button
           type="submit"
-          className="primary-gradient w-fit !text-light-900"
+          className="w-fit bg-primary-500 !text-light-900"
           disabled={isSubmitting}
         >
           {isSubmitting ? (

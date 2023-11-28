@@ -11,7 +11,11 @@ import RenderTag from "@/components/shared/RenderTag";
 import Votes from "@/components/shared/Votes";
 import { getQuestionById } from "@/lib/actions/question.action";
 import { getUserById } from "@/lib/actions/user.action";
-import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
+import {
+  formatAndDivideNumber,
+  getPluralString,
+  getTimestamp,
+} from "@/lib/utils";
 import { URLProps } from "@/types";
 import { redirect } from "next/navigation";
 
@@ -65,24 +69,20 @@ const QuestionPage = async ({ params, searchParams }: URLProps) => {
 
       <div className="mb-8 mt-5 flex flex-wrap gap-4">
         <Metric
-          imgUrl="/assets/icons/like.svg"
-          alt="clock icon"
+          iconName="thumbs-up"
           value={` asked ${getTimestamp(result.createdAt)}`}
-          title=" Asked"
           textStyles="small-medium text-dark400_light800"
         />
         <Metric
-          imgUrl="/assets/icons/message.svg"
-          alt="message"
+          iconName="message-circle"
           value={formatAndDivideNumber(result.answers.length)}
-          title=" Answers"
+          title={getPluralString(result.answers.length, "answer")}
           textStyles="small-medium text-dark400_light800"
         />
         <Metric
-          imgUrl="/assets/icons/eye.svg"
-          alt="eye"
+          iconName="eye"
           value={formatAndDivideNumber(result.views)}
-          title=" Views"
+          title={getPluralString(result.views, "view")}
           textStyles="small-medium text-dark400_light800"
         />
       </div>
