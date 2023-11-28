@@ -2,8 +2,8 @@ import { getTopInteractedTags } from "@/lib/actions/tag.actions";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { Badge } from "../ui/badge";
-import RenderTag from "../shared/RenderTag";
+import { Badge } from "@/components/ui/badge";
+import RenderTag from "@/components/shared/RenderTag";
 import { TUserDoc } from "@/database/user.model";
 
 type UserCardProps = {

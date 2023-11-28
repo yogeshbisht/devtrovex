@@ -1,8 +1,8 @@
 "use client";
 
-import { formUrlQuery } from "@/lib/utils";
-import { Button } from "../ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
+import { formUrlQuery } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   pageNumber: number;

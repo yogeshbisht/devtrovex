@@ -2,8 +2,10 @@
 
 import { z } from "zod";
 import React, { useRef, useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { usePathname } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { Sparkles } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Editor } from "@tinymce/tinymce-react";
 
 import { AnswersSchema } from "@/lib/validations";
@@ -16,10 +18,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useTheme } from "@/context/ThemeProvider";
-import { Button } from "../ui/button";
-import Image from "next/image";
+import { Button } from "@/components/ui/button";
 import { createAnswer } from "@/lib/actions/answer.action";
-import { usePathname } from "next/navigation";
 
 type AnswerProps = {
   question: string;
@@ -115,13 +115,7 @@ const Answer = ({ question, questionId, authorId }: AnswerProps) => {
             <>Generating...</>
           ) : (
             <>
-              <Image
-                src="/assets/icons/stars.svg"
-                alt="star"
-                width={12}
-                height={12}
-                className="object-contain"
-              />
+              <Sparkles size={12} className="object-contain" />
               Generate AI Answer
             </>
           )}

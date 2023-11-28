@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { deleteAnswer } from "@/lib/actions/answer.action";
 import { deleteQuestion } from "@/lib/actions/question.action";
+import { PenSquare, Trash2 } from "lucide-react";
 
 type EditDeleteActionProps = {
   type: string;
@@ -37,21 +37,15 @@ const EditDeleteAction = ({ type, itemId }: EditDeleteActionProps) => {
   return (
     <div className="flex items-center justify-end gap-3 max-sm:w-full">
       {type === "Question" && (
-        <Image
-          src="/assets/icons/edit.svg"
-          alt="Edit"
-          width={14}
-          height={14}
+        <PenSquare
+          size={14}
           className="cursor-pointer object-contain"
           onClick={handleEdit}
         />
       )}
 
-      <Image
-        src="/assets/icons/trash.svg"
-        alt="Delete"
-        width={14}
-        height={14}
+      <Trash2
+        size={14}
         className="cursor-pointer object-contain"
         onClick={handleDelete}
       />

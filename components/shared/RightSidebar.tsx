@@ -1,9 +1,9 @@
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import RenderTag from "./RenderTag";
 import { getHotQuestions } from "@/lib/actions/question.action";
 import { getTopPopularTags } from "@/lib/actions/tag.actions";
+import { ChevronRight } from "lucide-react";
 
 const RightSidebar = async () => {
   const { hotQuestions } = await getHotQuestions();
@@ -23,13 +23,7 @@ const RightSidebar = async () => {
               <p className="body-medium text-dark500_light700">
                 {question.title}
               </p>
-              <Image
-                src="/assets/icons/chevron-right.svg"
-                width={20}
-                height={20}
-                alt="Chevron Right"
-                className="invert-colors"
-              />
+              <ChevronRight size={20} className="invert-colors" />
             </Link>
           ))}
         </div>

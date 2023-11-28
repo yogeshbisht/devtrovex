@@ -1,9 +1,9 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import RenderTag from "../shared/RenderTag";
-import Metric from "../shared/Metric";
-import EditDeleteAction from "../shared/EditDeleteAction";
+import RenderTag from "@/components/shared/RenderTag";
+import Metric from "@/components/shared/Metric";
+import EditDeleteAction from "@/components/shared/EditDeleteAction";
 import {
   formatAndDivideNumber,
   getPluralString,

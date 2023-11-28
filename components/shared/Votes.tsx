@@ -1,5 +1,8 @@
 "use client";
 
+import React, { useEffect } from "react";
+import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 import { downvoteAnswer, upvoteAnswer } from "@/lib/actions/answer.action";
 import { viewQuestion } from "@/lib/actions/interaction.action";
 import {
@@ -8,10 +11,7 @@ import {
 } from "@/lib/actions/question.action";
 import { toggleSaveQuestion } from "@/lib/actions/user.action";
 import { formatAndDivideNumber } from "@/lib/utils";
-import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect } from "react";
-import { toast } from "../ui/use-toast";
+import { toast } from "@/components/ui/use-toast";
 
 type VotesProps = {
   itemId: string;

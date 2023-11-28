@@ -1,7 +1,6 @@
 "use client";
 
 import * as z from "zod";
-import Image from "next/image";
 import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { usePathname, useRouter } from "next/navigation";
@@ -23,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useTheme } from "@/context/ThemeProvider";
 import { createQuestion, editQuestion } from "@/lib/actions/question.action";
+import { X } from "lucide-react";
 
 type QuestionProps = {
   type?: string;
@@ -237,11 +237,8 @@ const Question = ({ type, mongoUserId, questionDetails }: QuestionProps) => {
                         >
                           {tag}
                           {type !== "Edit" && (
-                            <Image
-                              src="/assets/icons/close.svg"
-                              alt="Close icon"
-                              width={12}
-                              height={12}
+                            <X
+                              size={12}
                               className="cursor-pointer object-contain invert-0 dark:invert"
                             />
                           )}

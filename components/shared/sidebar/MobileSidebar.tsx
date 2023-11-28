@@ -5,7 +5,7 @@ import Link from "next/link";
 import { MenuIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 
-import Logo from "../navbar/Logo";
+import Logo from "@/components/shared/navbar/Logo";
 import {
   Sheet,
   SheetClose,

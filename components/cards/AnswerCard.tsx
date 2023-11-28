@@ -7,8 +7,8 @@ import { SignedIn } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
-import Metric from "../shared/Metric";
-import EditDeleteAction from "../shared/EditDeleteAction";
+import Metric from "@/components/shared/Metric";
+import EditDeleteAction from "@/components/shared/EditDeleteAction";
 import { Populated } from "@/database/shared.types";
 import { TAnswerDoc } from "@/database/answer.model";
 

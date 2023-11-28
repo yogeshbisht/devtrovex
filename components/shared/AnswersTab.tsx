@@ -1,6 +1,6 @@
 import React from "react";
 import { getUserAnswers } from "@/lib/actions/user.action";
-import AnswerCard from "../cards/AnswerCard";
+import AnswerCard from "@/components/cards/AnswerCard";
 import Pagination from "./Pagination";
 
 type AnswersTabProps = {

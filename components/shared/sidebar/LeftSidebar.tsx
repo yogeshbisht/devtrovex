@@ -4,11 +4,11 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SignedOut, useAuth } from "@clerk/nextjs";
-
-import Logo from "../navbar/Logo";
 import { UserCircle2, UserPlus2 } from "lucide-react";
-import { sidebarLinks } from "@/constants";
+
+import Logo from "@/components/shared/navbar/Logo";
 import { Button } from "@/components/ui/button";
+import { sidebarLinks } from "@/constants";
 
 const LeftSidebar = () => {
   const { userId } = useAuth();

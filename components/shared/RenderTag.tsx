@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import { Badge } from "../ui/badge";
+import { Badge } from "@/components/ui/badge";
 
 interface RenderTagProps {
   _id: string;

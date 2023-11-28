@@ -18,7 +18,7 @@ import { revalidatePath } from "next/cache";
 import Question, { TQuestionDoc } from "@/database/question.model";
 import Answer, { TAnswerDoc } from "@/database/answer.model";
 import { BadgeCriteriaType } from "@/types";
-import { assignBadges } from "../utils";
+import { assignBadges } from "@/lib/utils";
 import { Populated } from "@/database/shared.types";
 
 export async function getUserById(params: GetUserByIdParams) {

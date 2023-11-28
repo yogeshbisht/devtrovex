@@ -2,8 +2,8 @@ import React from "react";
 import Theme from "./Theme";
 import { SignedIn, UserButton } from "@clerk/nextjs";
 import Logo from "./Logo";
-import MobileSidebar from "../sidebar/MobileSidebar";
-import GlobalSearch from "../search/GlobalSearch";
+import MobileSidebar from "@/components/shared/sidebar/MobileSidebar";
+import GlobalSearch from "@/components/shared/search/GlobalSearch";
 
 const Navbar = () => {
   return (

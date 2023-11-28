@@ -1,7 +1,7 @@
-import { getUserQuestions } from "@/lib/actions/user.action";
 import React from "react";
-import QuestionCard from "../cards/QuestionCard";
+import QuestionCard from "@/components/cards/QuestionCard";
 import Pagination from "./Pagination";
+import { getUserQuestions } from "@/lib/actions/user.action";
 
 type QuestionsTabProps = {
   userId: string;

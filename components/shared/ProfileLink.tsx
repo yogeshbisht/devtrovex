@@ -1,17 +1,21 @@
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import Icon from "./Icon";
 
 type ProfileLinkProps = {
-  imgUrl: string;
+  iconName: "calendar-days" | "link" | "map-pin";
   href?: string;
   title: string;
 };
 
-const ProfileLink = ({ imgUrl, href, title }: ProfileLinkProps) => {
+const ProfileLink = ({ iconName, href, title }: ProfileLinkProps) => {
   return (
     <div className="flex-center gap-1">
-      <Image src={imgUrl} alt="icon" width={20} height={20} />
+      <Icon
+        name={iconName}
+        size={20}
+        className={`object-contain ${href ? "rounded-full" : ""}`}
+      />
 
       {href ? (
         <Link
