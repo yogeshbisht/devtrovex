@@ -1,16 +1,16 @@
+import Link from "next/link";
+import Image from "next/image";
+import { SignedIn } from "@clerk/nextjs";
+
+import { Populated } from "@/database/shared.types";
+import { TAnswerDoc } from "@/database/answer.model";
 import {
   formatAndDivideNumber,
   getPluralString,
   getTimestamp,
 } from "@/lib/utils";
-import { SignedIn } from "@clerk/nextjs";
-import Link from "next/link";
-import Image from "next/image";
-import React from "react";
 import Metric from "@/components/shared/Metric";
 import EditDeleteAction from "@/components/shared/EditDeleteAction";
-import { Populated } from "@/database/shared.types";
-import { TAnswerDoc } from "@/database/answer.model";
 
 type AnswerCardProps = {
   answer: Populated<TAnswerDoc, "author" | "question">;

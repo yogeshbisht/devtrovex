@@ -1,7 +1,6 @@
-import { formatAndDivideNumber } from "@/lib/utils";
-import { BadgeCounts } from "@/types";
 import Image from "next/image";
-import React from "react";
+import { BadgeCounts } from "@/types";
+import { formatAndDivideNumber } from "@/lib/utils";
 
 type StatsCardProps = {
   imgUrl: string;
@@ -57,17 +56,17 @@ const Stats = ({
         </div>
 
         <StatsCard
-          imgUrl="/assets/icons/gold-medal.svg"
+          imgUrl="/assets/icons/gold.svg"
           value={badges.GOLD}
           title="Gold Badges"
         />
         <StatsCard
-          imgUrl="/assets/icons/silver-medal.svg"
+          imgUrl="/assets/icons/silver.svg"
           value={badges.SILVER}
           title="Silver Badges"
         />
         <StatsCard
-          imgUrl="/assets/icons/bronze-medal.svg"
+          imgUrl="/assets/icons/bronze.svg"
           value={badges.BRONZE}
           title="Bronze Badges"
         />
