@@ -123,16 +123,8 @@
     @apply text-[20px] font-semibold leading-[24.8px];
   }
 
-  .base-medium {
-    @apply text-[18px] font-medium leading-[25.2px];
-  }
-
   .base-semibold {
     @apply text-[18px] font-semibold leading-[25.2px];
-  }
-
-  .base-bold {
-    @apply text-[18px] font-bold leading-[140%];
   }
 
   .paragraph-regular {

@@ -4,7 +4,10 @@ import React from "react";
 import Link from "next/link";
 import { MenuIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { SignedOut, useAuth } from "@clerk/nextjs";
 
+import { cn } from "@/lib/utils";
+import { sidebarLinks } from "@/constants";
 import Logo from "@/components/shared/navbar/Logo";
 import {
   Sheet,
@@ -12,9 +15,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { SignedOut, useAuth } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
-import { sidebarLinks } from "@/constants";
 
 const SidebarContent = () => {
   const { userId } = useAuth();
@@ -37,18 +38,12 @@ const SidebarContent = () => {
           <SheetClose asChild key={item.route}>
             <Link
               href={item.route}
-              className={`${
-                isActive
-                  ? "bg-primary-500 text-light-900"
-                  : "text-dark300_light900"
-              } sidebar-link`}
+              className={cn("sidebar-link pl-10", {
+                "bg-primary-500 text-light-900": isActive,
+              })}
             >
-              <item.icon
-                className={`${isActive ? "" : "invert-colors"} h-6 w-6`}
-              />
-              <p className={`${isActive ? "base-bold" : "base-medium"}`}>
-                {item.label}
-              </p>
+              <item.icon size={24} />
+              <p className="text-[18px]">{item.label}</p>
             </Link>
           </SheetClose>
         );

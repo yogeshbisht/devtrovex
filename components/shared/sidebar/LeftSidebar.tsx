@@ -9,6 +9,7 @@ import { UserCircle2, UserPlus2 } from "lucide-react";
 import Logo from "@/components/shared/navbar/Logo";
 import { Button } from "@/components/ui/button";
 import { sidebarLinks } from "@/constants";
+import { cn } from "@/lib/utils";
 
 const LeftSidebar = () => {
   const { userId } = useAuth();
@@ -37,17 +38,12 @@ const LeftSidebar = () => {
               <Link
                 key={item.route}
                 href={item.route}
-                className={`${
-                  isActive
-                    ? "bg-primary-500 text-light-900"
-                    : "text-dark300_light900"
-                } sidebar-link`}
+                className={cn("sidebar-link justify-center", {
+                  "bg-primary-500 text-light-900": isActive,
+                })}
               >
-                <item.icon
-                  className={`${isActive ? "" : "invert-colors"}`}
-                  size={24}
-                />
-                <p className="base-medium max-lg:hidden">{item.label}</p>
+                <item.icon size={24} />
+                <p className="text-[18px] max-lg:hidden">{item.label}</p>
               </Link>
             );
           })}
