@@ -149,7 +149,7 @@ body {
 }
 
 .sidebar-link {
-  @apply flex items-center lg:justify-start lg:pl-10 gap-4 py-4;
+  @apply flex items-center lg:justify-start lg:pl-10 gap-4 h-12;
 }
 
 .search-bar {

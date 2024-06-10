@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { MenuIcon } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { SignedOut, useAuth } from "@clerk/nextjs";
 
 import { cn } from "@/lib/utils";
@@ -42,7 +42,7 @@ const SidebarContent = () => {
                 "bg-primary-500 text-light-900": isActive,
               })}
             >
-              <item.icon size={24} />
+              <item.icon size={20} />
               <p className="text-[18px]">{item.label}</p>
             </Link>
           </SheetClose>
@@ -53,6 +53,12 @@ const SidebarContent = () => {
 };
 
 const MobileSidebar = () => {
+  const router = useRouter();
+
+  const redirectToRoute = (route: string) => {
+    router.push(route);
+  };
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -77,18 +83,20 @@ const MobileSidebar = () => {
           <SignedOut>
             <div className="flex flex-col gap-3">
               <SheetClose asChild>
-                <Link href="/sign-in">
-                  <Button className="small-medium btn-secondary min-h-[48px] w-full px-4 py-3 shadow-none">
-                    <span className="primary-text-gradient">Log In</span>
-                  </Button>
-                </Link>
+                <Button
+                  onClick={() => redirectToRoute("/sign-in")}
+                  className="btn-secondary h-12"
+                >
+                  Login
+                </Button>
               </SheetClose>
               <SheetClose asChild>
-                <Link href="/sign-up">
-                  <Button className="small-medium light-border-2 btn-tertiary text-dark400_light900 min-h-[48px] w-full border px-4 py-3 shadow-none">
-                    <span>Register</span>
-                  </Button>
-                </Link>
+                <Button
+                  onClick={() => redirectToRoute("/sign-up")}
+                  className="btn-tertiary h-12"
+                >
+                  Register
+                </Button>
               </SheetClose>
             </div>
           </SignedOut>
