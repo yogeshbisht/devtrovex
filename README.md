@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# DevTroveX
 
-## Getting Started
+DevTroveX is a Next.js application that allows users to create accounts, join communities, ask questions, and provide answers to queries either manually or with the help of AI. It is a collaborative platform designed to facilitate knowledge sharing and problem-solving within user communities.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- User authentication and account creation
+- Post questions to user communities
+- Provide answers to your own questions or others'
+- Ability to create answers with the help of integration AI
+- Upvote and downvote answers
+- Search functionality to find relevant questions and answers
+- Responsive design for optimal viewing on different devices
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Clone the repository:**
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+   ```bash
+   git clone https://github.com/yogeshbisht/devtrovex.git
+   cd devtrovex
+   ```
 
-## Learn More
+2. **Install dependencies:**
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. **Set up environment variables:**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+   Copy the example environment file to a new `.env.local` file:
 
-## Deploy on Vercel
+   ```bash
+   cp env.example .env.local
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   Then, fill in the values in the `.env.local` file:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+   ```plaintext
+   MONGODB_URL=your-database-url
+   NEXT_PUBLIC_SERVER_URL=your-api-url
+
+   ```
+
+4. **Run the development server:**
+
+   ```bash
+   npm run dev
+   ```
+
+   Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Usage
+
+1. **Sign up** to create a new account or **log in** if you already have one.
+2. **Ask questions** within a community to get help from other users.
+3. **Answer questions** posed by other users to share your knowledge.
+4. **Vote on answers** to highlight the most helpful responses.
+
+## Contact
+
+For any inquiries or feedback, please reach out to me through my website [Yogesh Bisht](https://yogeshbisht.com).
