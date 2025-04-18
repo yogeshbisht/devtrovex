@@ -258,7 +258,7 @@ const Question = ({ type, mongoUserId, questionDetails }: QuestionProps) => {
         />
         <Button
           type="submit"
-          className="w-fit bg-primary-500 !text-light-900"
+          className="w-fit bg-primary-500 text-light-900!"
           disabled={isSubmitting}
         >
           {isSubmitting ? (
