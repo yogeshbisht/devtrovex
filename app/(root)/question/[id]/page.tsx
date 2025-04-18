@@ -2,6 +2,9 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { auth } from "@clerk/nextjs/server";
+import { TUserDoc } from "@/database/user.model";
+import { TQuestionDoc } from "@/database/question.model";
+import { Types, Document } from "mongoose";
 
 import Answer from "@/components/forms/Answer";
 import AllAnswers from "@/components/shared/AllAnswers";
@@ -14,21 +17,32 @@ import { getUserById } from "@/lib/actions/user.action";
 import {
   formatAndDivideNumber,
   getPluralString,
-  getTimestamp,
+  getTimestamp
 } from "@/lib/utils";
 import { URLProps } from "@/types";
 import { redirect } from "next/navigation";
 
 const QuestionPage = async ({ params, searchParams }: URLProps) => {
-  const page = searchParams.page ? Number(searchParams.page) : 1;
-  const result = await getQuestionById({ questionId: params.id });
-  const { userId } = auth();
+  const { page, filter } = await searchParams;
+  const pageNumber = page ? Number(page) : 1;
+  const { id } = await params;
+
+  const result = await getQuestionById({ questionId: id });
+  const { userId } = await auth();
 
   if (!userId) redirect("/sign-in");
   if (!result) redirect("/");
 
   const mongoUser = await getUserById({ userId });
   if (!mongoUser) redirect("/");
+
+  const typedMongoUser = mongoUser as TUserDoc & { _id: Types.ObjectId };
+  const typedResult = result as TQuestionDoc & {
+    _id: Types.ObjectId;
+    upvotes: Types.ObjectId[];
+    downvotes: Types.ObjectId[];
+    saved: Types.ObjectId[];
+  };
 
   return (
     <>
@@ -53,12 +67,18 @@ const QuestionPage = async ({ params, searchParams }: URLProps) => {
             <Votes
               type="Question"
               itemId={JSON.stringify(result._id)}
-              userId={JSON.stringify(mongoUser._id)}
-              upvotes={result.upvotes.length}
-              hasUpvoted={result.upvotes.includes(mongoUser._id)}
-              downvotes={result.downvotes.length}
-              hasDownvoted={result.downvotes.includes(mongoUser._id)}
-              hasSaved={mongoUser?.saved.includes(result._id)}
+              userId={JSON.stringify(typedMongoUser._id)}
+              upvotes={typedResult.upvotes.length}
+              hasUpvoted={typedResult.upvotes.some(
+                (id) => id.toString() === typedMongoUser._id.toString()
+              )}
+              downvotes={typedResult.downvotes.length}
+              hasDownvoted={typedResult.downvotes.some(
+                (id) => id.toString() === typedMongoUser._id.toString()
+              )}
+              hasSaved={typedMongoUser.saved.some(
+                (id) => id.toString() === typedResult._id.toString()
+              )}
             />
           </div>
         </div>
@@ -102,16 +122,16 @@ const QuestionPage = async ({ params, searchParams }: URLProps) => {
 
       <AllAnswers
         questionId={result.id}
-        userId={mongoUser.id}
+        userId={typedMongoUser.id}
         totalAnswers={result.answers.length}
-        page={page}
-        filter={searchParams.filter}
+        page={pageNumber}
+        filter={filter}
       />
 
       <Answer
         question={result.content}
         questionId={result.id}
-        authorId={mongoUser.id}
+        authorId={typedMongoUser.id}
       />
     </>
   );

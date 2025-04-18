@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
 import {
   getQuestions,
-  getRecommendedQuestions,
+  getRecommendedQuestions
 } from "@/lib/actions/question.action";
 import { SearchParamsProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
@@ -18,33 +18,35 @@ import Pagination from "@/components/shared/Pagination";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Home | Devtrovex - Ask Questions, Get Answers",
+  title: "Home | Devtrovex - Ask Questions, Get Answers"
 };
 
-export default async function HomePage({ searchParams }: SearchParamsProps) {
-  const { userId } = auth();
-  const page = searchParams.page ? Number(searchParams.page) : 1;
+const HomePage = async ({ searchParams }: SearchParamsProps) => {
+  const { userId } = await auth();
+  const { page, filter, q } = await searchParams;
+
+  const pageNumber = page ? Number(page) : 1;
 
   let result;
 
-  if (searchParams?.filter === "recommended") {
+  if (filter === "recommended") {
     if (userId) {
       result = await getRecommendedQuestions({
         userId,
-        searchQuery: searchParams.q,
-        page,
+        searchQuery: q,
+        page: pageNumber
       });
     } else {
       result = {
         question: [],
-        isNext: false,
+        isNext: false
       };
     }
   } else {
     result = await getQuestions({
-      searchQuery: searchParams.q,
-      filter: searchParams.filter,
-      page,
+      searchQuery: q,
+      filter: filter,
+      page: pageNumber
     });
   }
 
@@ -77,7 +79,7 @@ export default async function HomePage({ searchParams }: SearchParamsProps) {
         {result.questions && result.questions.length > 0 ? (
           result.questions.map((question) => (
             <QuestionCard
-              key={question._id}
+              key={question._id as string}
               clerkId={userId}
               question={question}
             />
@@ -94,8 +96,10 @@ export default async function HomePage({ searchParams }: SearchParamsProps) {
         )}
       </div>
       <div className="mt-10">
-        <Pagination pageNumber={page} isNext={result.isNext} />
+        <Pagination pageNumber={pageNumber} isNext={result.isNext} />
       </div>
     </>
   );
-}
+};
+
+export default HomePage;

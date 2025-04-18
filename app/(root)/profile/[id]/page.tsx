@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { SignedIn, auth } from "@clerk/nextjs";
+import { SignedIn } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 import { URLProps } from "@/types";
 import { getUserInfo } from "@/lib/actions/user.action";
@@ -13,9 +14,12 @@ import QuestionsTab from "@/components/shared/QuestionsTab";
 import AnswersTab from "@/components/shared/AnswersTab";
 
 const ProfilePage = async ({ params, searchParams }: URLProps) => {
-  const page = searchParams.page ? Number(searchParams.page) : 1;
-  const { userId: clerkId } = auth();
-  const userInfo = await getUserInfo({ userId: params.id });
+  const { page } = await searchParams;
+  const pageNumber = page ? Number(page) : 1;
+  const { id } = await params;
+
+  const { userId: clerkId } = await auth();
+  const userInfo = await getUserInfo({ userId: id });
 
   return (
     <>
@@ -102,15 +106,15 @@ const ProfilePage = async ({ params, searchParams }: URLProps) => {
             className="mt-5 flex w-full flex-col gap-6"
           >
             <QuestionsTab
-              page={page}
-              userId={userInfo.user._id}
+              page={pageNumber}
+              userId={userInfo.user._id as string}
               clerkId={clerkId}
             />
           </TabsContent>
           <TabsContent value="answers" className="flex w-full flex-col gap-6">
             <AnswersTab
-              page={page}
-              userId={userInfo.user._id}
+              page={pageNumber}
+              userId={userInfo.user._id as string}
               clerkId={clerkId}
             />
           </TabsContent>

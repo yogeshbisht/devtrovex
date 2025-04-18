@@ -9,19 +9,18 @@ import { QuestionFilters } from "@/constants/filters";
 import { getSavedQuestions } from "@/lib/actions/user.action";
 import { SearchParamsProps } from "@/types";
 
-export default async function CollectionPage({
-  searchParams,
-}: SearchParamsProps) {
-  const { userId: clerkId } = auth();
+const CollectionPage = async ({ searchParams }: SearchParamsProps) => {
+  const { userId: clerkId } = await auth();
   if (!clerkId) redirect("/");
 
-  const page = searchParams.page ? Number(searchParams.page) : 1;
+  const { page, q, filter } = await searchParams;
+  const pageNumber = page ? Number(page) : 1;
 
   const result = await getSavedQuestions({
     clerkId,
-    searchQuery: searchParams.q,
-    filter: searchParams.filter,
-    page,
+    searchQuery: q,
+    filter: filter,
+    page: pageNumber
   });
 
   return (
@@ -59,8 +58,10 @@ export default async function CollectionPage({
         )}
       </div>
       <div className="mt-10">
-        <Pagination pageNumber={page} isNext={result.isNext} />
+        <Pagination pageNumber={pageNumber} isNext={result.isNext} />
       </div>
     </>
   );
-}
+};
+
+export default CollectionPage;

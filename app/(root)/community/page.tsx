@@ -10,16 +10,17 @@ import { SearchParamsProps } from "@/types";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Community | Devtrovex - Ask Questions, Get Answers",
+  title: "Community | Devtrovex - Ask Questions, Get Answers"
 };
 
 const CommunityPage = async ({ searchParams }: SearchParamsProps) => {
-  const page = searchParams.page ? Number(searchParams.page) : 1;
+  const { page, q, filter } = await searchParams;
+  const pageNumber = page ? Number(page) : 1;
 
   const result = await getAllUsers({
-    searchQuery: searchParams.q,
-    filter: searchParams.filter,
-    page,
+    searchQuery: q,
+    filter: filter,
+    page: pageNumber
   });
 
   return (
@@ -40,7 +41,9 @@ const CommunityPage = async ({ searchParams }: SearchParamsProps) => {
 
       <section className="mt-12 flex flex-wrap gap-4">
         {result.users.length > 0 ? (
-          result.users.map((user) => <UserCard key={user._id} user={user} />)
+          result.users.map((user: any) => (
+            <UserCard key={user._id} user={user} />
+          ))
         ) : (
           <div className="paragraph-regular text-dark200_light800 mx-auto max-w-4xl text-center">
             <p>There are no users to show</p>
@@ -51,7 +54,7 @@ const CommunityPage = async ({ searchParams }: SearchParamsProps) => {
         )}
       </section>
       <div className="mt-10">
-        <Pagination pageNumber={page} isNext={result.isNext} />
+        <Pagination pageNumber={pageNumber} isNext={result.isNext} />
       </div>
     </>
   );

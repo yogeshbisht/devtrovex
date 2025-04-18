@@ -22,12 +22,12 @@ const AllAnswers = async ({
   userId,
   totalAnswers,
   page,
-  filter,
+  filter
 }: AllAnswersProps) => {
   const result = await getAnswers({
     questionId,
     sortBy: filter,
-    page,
+    page
   });
 
   return (
@@ -40,7 +40,10 @@ const AllAnswers = async ({
 
       <div>
         {result.answers.map((answer) => (
-          <article key={answer._id} className="light-border border-b py-10">
+          <article
+            key={answer._id as string}
+            className="light-border border-b py-10"
+          >
             <div className="mb-8 flex flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
               <Link
                 href={`/profile/${answer.author.clerkId}`}

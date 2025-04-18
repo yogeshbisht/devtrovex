@@ -9,10 +9,13 @@ import { SearchParamsProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
 
 const TagsPage = async ({ searchParams }: SearchParamsProps) => {
+  const { q, filter, page } = await searchParams;
+  const pageNumber = page ? Number(page) : 1;
+
   const result = await getAllTags({
-    searchQuery: searchParams.q,
-    filter: searchParams.filter,
-    page: searchParams.page ? +searchParams.page : 1,
+    searchQuery: q,
+    filter: filter,
+    page: pageNumber
   });
 
   return (
@@ -36,7 +39,7 @@ const TagsPage = async ({ searchParams }: SearchParamsProps) => {
           result.tags.map((tag) => (
             <Link
               href={`/tags/${tag._id}`}
-              key={tag._id}
+              key={tag._id as string}
               className="shadow-light100_darknone"
             >
               <article className="background-light900_dark200 light-border flex w-full flex-col border px-8 py-10 sm:w-[260px]">
@@ -65,10 +68,7 @@ const TagsPage = async ({ searchParams }: SearchParamsProps) => {
         )}
       </section>
       <div className="mt-10">
-        <Pagination
-          pageNumber={searchParams?.page ? +searchParams.page : 1}
-          isNext={result.isNext}
-        />
+        <Pagination pageNumber={pageNumber} isNext={result.isNext} />
       </div>
     </>
   );

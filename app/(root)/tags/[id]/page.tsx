@@ -10,15 +10,18 @@ import { getQuestionsByTagId } from "@/lib/actions/tag.actions";
 import { URLProps } from "@/types";
 
 const TagDetailsPage = async ({ params, searchParams }: URLProps) => {
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) redirect("/");
 
-  const page = searchParams.page ? Number(searchParams.page) : 1;
+  const { id } = await params;
+
+  const { page, q } = await searchParams;
+  const pageNumber = page ? Number(page) : 1;
 
   const result = await getQuestionsByTagId({
-    tagId: params.id,
-    page,
-    searchQuery: searchParams.q,
+    tagId: id,
+    page: pageNumber,
+    searchQuery: q
   });
 
   return (
@@ -26,7 +29,7 @@ const TagDetailsPage = async ({ params, searchParams }: URLProps) => {
       <h1 className="h1-bold text-dark100_light900">{result?.tagTitle}</h1>
       <div className="mt-11 flex justify-between gap-5 max-sm:flex-col sm:items-center">
         <LocalSearchBar
-          route={`/tags/${params.id}`}
+          route={`/tags/${id}`}
           iconPosition="right"
           placeholder="Search tag questions"
           otherClasses="flex-1"
@@ -37,7 +40,7 @@ const TagDetailsPage = async ({ params, searchParams }: URLProps) => {
         {result.questions.length > 0 ? (
           result.questions.map((question) => (
             <QuestionCard
-              key={question._id}
+              key={question._id as string}
               clerkId={userId}
               question={question}
             />
@@ -52,7 +55,7 @@ const TagDetailsPage = async ({ params, searchParams }: URLProps) => {
         )}
       </div>
       <div className="mt-10">
-        <Pagination pageNumber={page} isNext={result.isNext} />
+        <Pagination pageNumber={pageNumber} isNext={result.isNext} />
       </div>
     </>
   );

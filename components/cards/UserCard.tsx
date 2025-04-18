@@ -1,3 +1,5 @@
+"use client";
+
 import { getTopInteractedTags } from "@/lib/actions/tag.actions";
 import Image from "next/image";
 import Link from "next/link";
@@ -5,17 +7,25 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 import RenderTag from "@/components/shared/RenderTag";
 import { TUserDoc } from "@/database/user.model";
+import { useRouter } from "next/navigation";
 
 type UserCardProps = {
   user: Partial<TUserDoc>;
 };
 
 const UserCard = async ({ user }: UserCardProps) => {
-  const interactedTags = await getTopInteractedTags({ userId: user._id });
+  const router = useRouter();
+  const interactedTags = await getTopInteractedTags({
+    userId: user._id as string
+  });
+
+  const onUserClick = () => {
+    router.push(`/profile/${user.clerkId}`);
+  };
 
   return (
-    <Link
-      href={`/profile/${user.clerkId}`}
+    <div
+      onClick={onUserClick}
       className="shadow-light100_darknone w-full max-xs:min-w-full xs:w-[260px]"
     >
       <article className="background-light900_dark200 light-border flex w-full flex-col items-center justify-center border p-8">
@@ -40,7 +50,11 @@ const UserCard = async ({ user }: UserCardProps) => {
           {interactedTags.length > 0 ? (
             <div className="flex flex-wrap gap-2">
               {interactedTags.map((tag) => (
-                <RenderTag key={tag._id} _id={tag._id} name={tag.name} />
+                <RenderTag
+                  key={tag._id as string}
+                  _id={tag._id as string}
+                  name={tag.name}
+                />
               ))}
             </div>
           ) : (
@@ -48,7 +62,7 @@ const UserCard = async ({ user }: UserCardProps) => {
           )}
         </div>
       </article>
-    </Link>
+    </div>
   );
 };
 

@@ -7,7 +7,7 @@ import EditDeleteAction from "@/components/shared/EditDeleteAction";
 import {
   formatAndDivideNumber,
   getPluralString,
-  getTimestamp,
+  getTimestamp
 } from "@/lib/utils";
 import { SignedIn } from "@clerk/nextjs";
 import { Populated } from "@/database/shared.types";
@@ -44,7 +44,11 @@ const QuestionCard = ({ question, clerkId }: QuestionCardProps) => {
 
       <div className="mt-3.5 flex flex-wrap gap-2">
         {tags?.map((tag) => (
-          <RenderTag key={tag?._id} _id={tag._id} name={tag.name} />
+          <RenderTag
+            key={tag._id as string}
+            _id={tag._id as string}
+            name={tag.name}
+          />
         ))}
       </div>
 
