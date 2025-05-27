@@ -3,13 +3,14 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { formUrlQuery } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Suspense } from "react";
 
 interface Props {
   pageNumber: number;
   isNext: boolean;
 }
 
-const Pagination = ({ pageNumber, isNext }: Props) => {
+const PaginationComponent = ({ pageNumber, isNext }: Props) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -48,6 +49,14 @@ const Pagination = ({ pageNumber, isNext }: Props) => {
         <p className="body-medium text-dark200_light800">Next</p>
       </Button>
     </div>
+  );
+};
+
+const Pagination = ({ pageNumber, isNext }: Props) => {
+  return (
+    <Suspense fallback={<div className="flex justify-center">Loading...</div>}>
+      <PaginationComponent pageNumber={pageNumber} isNext={isNext} />
+    </Suspense>
   );
 };
 

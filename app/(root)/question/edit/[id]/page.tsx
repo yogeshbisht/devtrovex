@@ -6,10 +6,11 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 const EditQuestionPage = async ({ params }: ParamsProps) => {
-  const result = await getQuestionById({ questionId: params.id });
+  const { id: questionId } = await params;
+  const result = await getQuestionById({ questionId });
   if (!result) return redirect("/");
 
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) return redirect("/sign-in");
 
   const mongoUser = await getUserById({ userId });

@@ -19,7 +19,7 @@ const QuestionsTab = async ({ userId, clerkId, page }: QuestionsTabProps) => {
     <>
       {result.questions.map((question) => (
         <QuestionCard
-          key={question._id}
+          key={question._id as string}
           clerkId={clerkId}
           question={question}
         />

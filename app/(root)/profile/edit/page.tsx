@@ -4,7 +4,7 @@ import { getUserById } from "@/lib/actions/user.action";
 import { ParamsProps } from "@/types";
 
 const EditProfilePage = async ({ params }: ParamsProps) => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) return null;
 

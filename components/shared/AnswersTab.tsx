@@ -15,7 +15,11 @@ const AnswersTab = async ({ userId, clerkId, page }: AnswersTabProps) => {
   return (
     <>
       {result.answers.map((answer) => (
-        <AnswerCard key={answer._id} clerkId={clerkId} answer={answer} />
+        <AnswerCard
+          key={answer._id as string}
+          clerkId={clerkId}
+          answer={answer}
+        />
       ))}
 
       <div className="mt-10">
